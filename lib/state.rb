@@ -25,8 +25,4 @@ class State < AdminSubdivisionSet
   self << AdminSubdivision.new('France', 'FR', 'francia')
   self << AdminSubdivision.new('San Marino', 'RSM', 'san marino')
   self << AdminSubdivision.new('Città del Vaticano', 'SCV', 'vaticano')
-
-  class << self
-    private :new
-  end
 end

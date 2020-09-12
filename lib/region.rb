@@ -39,8 +39,4 @@ class Region < AdminSubdivisionSet
   self << AdminSubdivision.new('Umbria', 'UMB')
   self << AdminSubdivision.new("Valle d'Aosta", 'VDA', filename: 'valle aosta')
   self << AdminSubdivision.new('Veneto', 'VEN')
-
-  class << self
-    private :new
-  end
 end

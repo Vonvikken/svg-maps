@@ -132,8 +132,4 @@ class Province < AdminSubdivisionSet
   self << AdminSubdivision.new('Vibo Valentia', 'VV')
   self << AdminSubdivision.new('Vicenza', 'VI')
   self << AdminSubdivision.new('Viterbo', 'VT')
-
-  class << self
-    private :new
-  end
 end
