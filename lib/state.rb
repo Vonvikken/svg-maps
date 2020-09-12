@@ -20,11 +20,11 @@
 # Italian neighboring states
 class State < AdminSubdivisionSet
   self << AdminSubdivision.new('Slovenija', 'SLO', 'slovenia')
-  self << AdminSubdivisionnew('Österreich', 'AUT', 'austria')
-  self << AdminSubdivisionnew('Svizzera', 'CH', 'svizzera')
-  self << AdminSubdivisionnew('France', 'FR', 'francia')
-  self << AdminSubdivisionnew('San Marino', 'RSM', 'san marino')
-  self << AdminSubdivisionnew('Città del Vaticano', 'SCV', 'vaticano')
+  self << AdminSubdivision.new('Österreich', 'AUT', 'austria')
+  self << AdminSubdivision.new('Svizzera', 'CH', 'svizzera')
+  self << AdminSubdivision.new('France', 'FR', 'francia')
+  self << AdminSubdivision.new('San Marino', 'RSM', 'san marino')
+  self << AdminSubdivision.new('Città del Vaticano', 'SCV', 'vaticano')
 
   class << self
     private :new
