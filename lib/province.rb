@@ -47,7 +47,7 @@ class Province < AdminSubdivisionSet
   self << AdminSubdivision.new('Ascoli Piceno', 'AP')
   self << AdminSubdivision.new('Asti', 'AT')
   self << AdminSubdivision.new('Avellino', 'AV')
-  self << AdminSubdivision.new('Barletta-Andria_trani', 'BT')
+  self << AdminSubdivision.new('Barletta-Andria-Trani', 'BT')
   self << AdminSubdivision.new('Belluno', 'BL')
   self << AdminSubdivision.new('Benevento', 'BN')
   self << AdminSubdivision.new('Bergamo', 'BG')
