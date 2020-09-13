@@ -30,6 +30,10 @@ class AdminSubdivision
   def filename
     @filename ||= @name.downcase
   end
+
+  def to_s
+    "#{@abbr}:\t#{@name}"
+  end
 end
 
 # Set of administrative subdivisions
@@ -39,10 +43,15 @@ class AdminSubdivisionSet
   end
 
   def <<(admin_subdivision)
-    @set[admin_subdivision[:abbr]] = admin_subdivision
+    @set[admin_subdivision.abbr] = admin_subdivision
   end
 
   def find(abbreviation)
     @set.select { |abbr, _| abbr == abbreviation }.first
+  end
+
+  def to_s
+    lst = @set.map { |_, val| val.to_s }
+    lst.join "\n"
   end
 end

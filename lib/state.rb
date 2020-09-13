@@ -17,12 +17,18 @@
 
 # frozen_string_literal: true
 
+require_relative 'admin_subdivision'
+
 # Italian neighboring states
 class State < AdminSubdivisionSet
-  self << AdminSubdivision.new('Slovenija', 'SLO', 'slovenia')
-  self << AdminSubdivision.new('Österreich', 'AUT', 'austria')
-  self << AdminSubdivision.new('Svizzera', 'CH', 'svizzera')
-  self << AdminSubdivision.new('France', 'FR', 'francia')
-  self << AdminSubdivision.new('San Marino', 'RSM', 'san marino')
-  self << AdminSubdivision.new('Città del Vaticano', 'SCV', 'vaticano')
+  def initialize
+    super
+
+    self << AdminSubdivision.new('Slovenija', 'SL', 'slovenia')
+    self << AdminSubdivision.new('Österreich', 'AT', 'austria')
+    self << AdminSubdivision.new('Svizzera', 'CH', 'svizzera')
+    self << AdminSubdivision.new('France', 'FR', 'francia')
+    self << AdminSubdivision.new('San Marino', 'SM', 'san marino')
+    self << AdminSubdivision.new('Città del Vaticano', 'CV', 'vaticano')
+  end
 end
