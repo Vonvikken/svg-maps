@@ -34,13 +34,8 @@ class ProvinceElem < AdminSubdivision
   end
 end
 
-# rubocop:disable Metrics/ClassLength
-
 # Italian metropolitan cities and provinces
 class Province < AdminSubdivisionSet
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/MethodLength
-
   def initialize
     super
 
@@ -156,12 +151,7 @@ class Province < AdminSubdivisionSet
     self << ProvinceElem.new('Viterbo', 'VT', 'LAZ')
   end
 
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
-
   def code
     'IT-' << @abbr
   end
 end
-
-# rubocop:enable Metrics/ClassLength

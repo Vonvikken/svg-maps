@@ -21,9 +21,6 @@ require_relative 'admin_subdivision'
 
 # Italian region
 class Region < AdminSubdivisionSet
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/MethodLength
-
   def initialize
     super
     self << AdminSubdivision.new('Abruzzo', 'ABR')
@@ -47,7 +44,4 @@ class Region < AdminSubdivisionSet
     self << AdminSubdivision.new("Valle d'Aosta", 'VDA', filename: 'valle aosta')
     self << AdminSubdivision.new('Veneto', 'VEN')
   end
-
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
 end
