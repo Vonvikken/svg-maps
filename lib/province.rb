@@ -30,6 +30,10 @@ class ProvinceElem < AdminSubdivision
   end
 
   def to_s
+    "#{@abbr}:\t#{@name}"
+  end
+
+  def inspect
     "#{@abbr} [#{@region}]:\t#{@name}"
   end
 end
