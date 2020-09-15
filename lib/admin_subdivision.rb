@@ -21,6 +21,8 @@
 class AdminSubdivision
   attr_reader :abbr, :name
 
+  protected
+
   def initialize(name, abbr, filename = nil)
     @name = name
     @abbr = abbr
@@ -31,6 +33,8 @@ class AdminSubdivision
     @filename ||= @name.downcase
   end
 
+  public
+
   def to_s
     "#{@abbr}:\t#{@name}"
   end
@@ -38,6 +42,8 @@ end
 
 # Set of administrative subdivisions
 class AdminSubdivisionSet
+  protected
+
   def initialize
     @set = {}
   end
@@ -45,6 +51,8 @@ class AdminSubdivisionSet
   def <<(admin_subdivision)
     @set[admin_subdivision.abbr] = admin_subdivision
   end
+
+  public
 
   def find(abbreviation)
     @set.select { |abbr, _| abbr == abbreviation }.first

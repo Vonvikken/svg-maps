@@ -18,9 +18,12 @@
 # frozen_string_literal: true
 
 require_relative 'admin_subdivision'
+require 'singleton'
 
 # Italian region
 class Region < AdminSubdivisionSet
+  include Singleton
+
   def initialize
     super
     self << AdminSubdivision.new('Abruzzo', 'ABR')

@@ -18,9 +18,12 @@
 # frozen_string_literal: true
 
 require_relative 'admin_subdivision'
+require 'singleton'
 
 # Italian neighboring states
 class State < AdminSubdivisionSet
+  include Singleton
+
   def initialize
     super
 

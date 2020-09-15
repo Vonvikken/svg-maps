@@ -18,6 +18,7 @@
 # frozen_string_literal: true
 
 require_relative 'admin_subdivision'
+require 'singleton'
 
 # Single Province element
 class ProvinceElem < AdminSubdivision
@@ -40,6 +41,8 @@ end
 
 # Italian metropolitan cities and provinces
 class Province < AdminSubdivisionSet
+  include Singleton
+
   def initialize
     super
 
