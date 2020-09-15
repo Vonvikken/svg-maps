@@ -29,11 +29,11 @@ class AdminSubdivision
     @filename = filename
   end
 
+  public
+
   def filename
     @filename ||= @name.downcase
   end
-
-  public
 
   def to_s
     "#{@abbr}:\t#{@name}"
@@ -55,7 +55,7 @@ class AdminSubdivisionSet
   public
 
   def find(abbreviation)
-    @set.select { |abbr, _| abbr == abbreviation }.first
+    @set[abbreviation]
   end
 
   def to_s

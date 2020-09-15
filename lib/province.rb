@@ -27,7 +27,11 @@ class ProvinceElem < AdminSubdivision
 
   def initialize(name, abbr, region)
     super(name, abbr)
-    @region = region
+    @reg = Region.instance.find region
+  end
+
+  def code
+    'IT-' + @abbr
   end
 
   def to_s
@@ -35,7 +39,7 @@ class ProvinceElem < AdminSubdivision
   end
 
   def inspect
-    "#{@abbr} [#{@region}]:\t#{@name}"
+    "#{@abbr} [#{@reg.abbr}]:\t#{@name}"
   end
 end
 
@@ -156,9 +160,5 @@ class Province < AdminSubdivisionSet
     self << ProvinceElem.new('Vibo Valentia', 'VV', 'CAL')
     self << ProvinceElem.new('Vicenza', 'VI', 'VEN')
     self << ProvinceElem.new('Viterbo', 'VT', 'LAZ')
-  end
-
-  def code
-    'IT-' << @abbr
   end
 end
