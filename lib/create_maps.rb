@@ -143,10 +143,10 @@ class DatasetBuilder
     Dir.chdir tmp_dir
 
     # Own province
-    `mapshaper -i #{reg_prov_dataset_filename} -filter 'ISO3166_2=="IT-ME"' -o #{prov_dataset_filename}`
+    `mapshaper -i #{reg_prov_dataset_filename} -filter 'ISO3166_2=="#{@province.code}"' -o #{prov_dataset_filename}`
 
     # Other provinces of the region
-    `mapshaper -i #{reg_prov_dataset_filename} -filter 'ISO3166_2!="IT-ME"' -o #{prov_no_dataset_filename}`
+    `mapshaper -i #{reg_prov_dataset_filename} -filter 'ISO3166_2!="#{@province.code}"' -o #{prov_no_dataset_filename}`
 
     # Communes of own province
     `mapshaper -i #{reg_com_dataset_filename} -clip #{prov_dataset_filename} -o #{com_dataset_filename}`
