@@ -1,4 +1,4 @@
-# Class:     /home/vonvikken/svg-maps/lib/create_maps.rb
+# Class:     /home/vonvikken/svg-maps/lib/dataset_builder.rb
 # Author:    Vincenzo Stornanti <von.vikken@gmail.com>
 #
 # Copyright 2020 Vincenzo Stornanti
@@ -17,61 +17,10 @@
 
 # frozen_string_literal: true
 
-require 'optparse'
 require 'English'
 require_relative 'province'
 require_relative 'region'
 require_relative 'state'
-
-# Command-line argument parser
-class Parser
-  attr_reader :options
-
-  def initialize
-    @options = {}
-  end
-
-  def parse(args)
-    parser = OptionParser.new do |opts|
-      opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
-      opts.separator ''
-      opts.separator 'Options:'
-
-      opts.on('-p', '--province PROV', 'Code of the province or metropolitan city to display') do |prov|
-        @options[:province] = prov
-      end
-
-      opts.on('-r', '--regions REGIONS', Array, 'Codes of the neighboring regions (comma-separated list)') do |regs|
-        @options[:regions] = regs
-      end
-
-      opts.on('-s', '--states STATES', Array, 'Codes of the neighboring states (comma-separated list)') do |states|
-        @options[:states] = states
-      end
-
-      opts.on('-P', '--list-provinces', 'List province or metropolitan city codes and exit') do
-        puts Province.instance
-        exit 0
-      end
-
-      opts.on('-R', '--list-regions', 'List region codes and exit') do
-        puts Region.instance
-        exit 0
-      end
-
-      opts.on('-S', '--list-states', 'List neighboring state codes and exit') do
-        puts State.instance
-        exit 0
-      end
-    end
-
-    parser.parse!(args)
-  end
-
-  def inspect
-    @options.to_s
-  end
-end
 
 # Class used for building the intermediate datasets of the maps
 class DatasetBuilder
