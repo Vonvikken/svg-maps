@@ -48,7 +48,8 @@ class DatasetBuilder
     check_prerequisites
     initial_datasets
     intermediate_datasets
-    calc_coordinates
+    bb_info = calc_coordinates
+    combine_maps bb_info
   end
 
   private
@@ -150,6 +151,17 @@ class DatasetBuilder
     }
   end
 
+  def combine_maps(bb_info)
+    Dir.chdir tmp_dir
+    regions_list = @regions.map { |r| reg_dataset_filename r }.join ' '
+    states_list = @states.map { |s| state_filename s }.join ' '
+    bbox_bounds = "#{bb_info[:nw_lon]},#{bb_info[:nw_lat]},#{bb_info[:se_lon]},#{bb_info[:se_lat]}"
+    cmd = "mapshaper -i #{com_dataset_filename} #{prov_no_dataset_filename} #{regions_list} #{states_list} "\
+          "combine-files -merge-layers force -clip bbox=#{bbox_bounds} -o #{combined_filename}"
+    `#{cmd}`
+    Dir.chdir @data_dir
+  end
+
   # Filename methods
 
   # Temporary directory path
@@ -200,5 +212,15 @@ class DatasetBuilder
   # Filename of the intermediate dataset with the boundaries of the communes within the selected province
   def com_dataset_filename
     "#{@province.code}-8.geojson"
+  end
+
+  # Filename of the combined map
+  def combined_filename
+    "#{@province.code}-combined.geojson"
+  end
+
+  # Final name of the map
+  def final_filename
+    "#{@province.name}.geojson"
   end
 end
