@@ -18,6 +18,7 @@
 # frozen_string_literal: true
 
 require 'English'
+require 'open3'
 require_relative 'province'
 require_relative 'region'
 require_relative 'state'
@@ -35,12 +36,19 @@ class DatasetBuilder
     @states = []
     options[:states]&.each { |s| @states << st.find(s) }
 
-    @data_dir = data_dir
+    @n_padding = options[:n_padding]
+    @s_padding = options[:s_padding]
+    @w_padding = options[:w_padding]
+    @e_padding = options[:e_padding]
+
+    @data_dir = File.expand_path data_dir
   end
 
   def build_dataset
     check_prerequisites
-    create_datasets
+    initial_datasets
+    intermediate_datasets
+    calc_coordinates
   end
 
   private
@@ -67,9 +75,8 @@ class DatasetBuilder
     end
   end
 
-  def create_datasets
-    # Extract other regions
-    puts 'Generating intermediate datasets...'
+  def initial_datasets
+    puts 'Extracting initial datasets...'
 
     # Neighbouring regions
     @regions.each do |r|
@@ -88,8 +95,12 @@ class DatasetBuilder
     cmd = "mapshaper -i #{own_reg_filename} -target type=polygon -filter 'admin_level==8' "\
           "-o #{tmp_dir}/#{reg_com_dataset_filename}"
     `#{cmd}`
+  end
 
+  def intermediate_datasets
     Dir.chdir tmp_dir
+
+    puts 'Generating intermediate datasets...'
 
     # Own province
     `mapshaper -i #{reg_prov_dataset_filename} -filter 'ISO3166_2=="#{@province.code}"' -o #{prov_dataset_filename}`
@@ -99,6 +110,44 @@ class DatasetBuilder
 
     # Communes of own province
     `mapshaper -i #{reg_com_dataset_filename} -clip #{prov_dataset_filename} -o #{com_dataset_filename}`
+
+    Dir.chdir @data_dir
+  end
+
+  def calc_coordinates
+    puts 'Calculating coordinates...'
+
+    # Mapshaper sends output to STDERR...
+    _, info, = Open3.capture3("mapshaper -i #{tmp_dir}/#{com_dataset_filename} -info")
+    info_lines = info.split "\n"
+    matches = info_lines.map { |l| l.match(/^Bounds:\s+(\d{1,3}.\d+),(\d{1,3}.\d+),(\d{1,3}.\d+),(\d{1,3}.\d+)/) }
+    m = matches.reject(&:nil?).first
+
+    nw_lon = m[1].to_f
+    nw_lat = m[2].to_f
+    se_lon = m[3].to_f
+    se_lat = m[4].to_f
+    puts "Bounding box: NW (#{nw_lat}, #{nw_lon}) SE (#{se_lat}, #{se_lon})"
+
+    nw_lon -= @w_padding
+    nw_lat -= @n_padding
+    se_lon += @e_padding
+    se_lat += @s_padding
+    puts "Padded bounding box: NW (#{nw_lat}, #{nw_lon}) SE (#{se_lat}, #{se_lon})"
+
+    center_lon = (nw_lon + se_lon) / 2
+    center_lat = (nw_lat + se_lat) / 2
+
+    puts "Center point coordinates are (#{center_lat}, #{center_lon})"
+
+    {
+      nw_lon: nw_lon,
+      nw_lat: nw_lat,
+      se_lon: se_lon,
+      se_lat: se_lat,
+      center_lon: center_lon,
+      center_lat: center_lat
+    }
   end
 
   # Filename methods

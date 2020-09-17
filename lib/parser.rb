@@ -27,7 +27,12 @@ class Parser
   attr_reader :options
 
   def initialize
-    @options = {}
+    @options = {
+      n_padding: 0.05,
+      s_padding: 0.05,
+      w_padding: 0.05,
+      e_padding: 0.05
+    }
   end
 
   def parse(args)
@@ -44,8 +49,38 @@ class Parser
         @options[:regions] = regs
       end
 
-      opts.on('-s', '--states STATES', Array, 'Codes of the neighboring states (comma-separated list)') do |states|
+      opts.on('-f', '--foreign STATES', Array,
+              'Codes of the neighboring foreign states (comma-separated list)') do |states|
         @options[:states] = states
+      end
+
+      opts.on('-b', '-bb-padding', Float,
+              'Padding of the map bounding box in degrees (default: 0.05). ' \
+                'Use to set the padding for all directions.') do |bb_pad|
+        @options[:n_padding] = bb_pad
+        @options[:s_padding] = bb_pad
+        @options[:w_padding] = bb_pad
+        @options[:e_padding] = bb_pad
+      end
+
+      opts.on('-n', '-north-padding', Float,
+              'North padding of the map bounding box in degrees (default: 0.05)') do |n_pad|
+        @options[:n_padding] = n_pad
+      end
+
+      opts.on('-s', '-south-padding', Float,
+              'South padding of the map bounding box in degrees (default: 0.05)') do |s_pad|
+        @options[:s_padding] = s_pad
+      end
+
+      opts.on('-w', '-west-padding', Float,
+              'West padding of the map bounding box in degrees (default: 0.05)') do |w_pad|
+        @options[:w_padding] = w_pad
+      end
+
+      opts.on('-e', '-east-padding', Float,
+              'East padding of the map bounding box in degrees (default: 0.05)') do |e_pad|
+        @options[:e_padding] = e_pad
       end
 
       opts.on('-P', '--list-provinces', 'List province or metropolitan city codes and exit') do
@@ -58,7 +93,7 @@ class Parser
         exit 0
       end
 
-      opts.on('-S', '--list-states', 'List neighboring state codes and exit') do
+      opts.on('-F', '--list-foreign', 'List neighboring foreign state codes and exit') do
         puts State.instance
         exit 0
       end
