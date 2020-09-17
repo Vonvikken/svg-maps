@@ -50,6 +50,11 @@ class DatasetBuilder
     intermediate_datasets
     bb_info = calc_coordinates
     combine_maps bb_info
+    change_projection bb_info
+    clean_tmp_dir
+
+    puts "Wrote map file #{final_filename}"
+    { tmp_dir: tmp_dir, map_name: final_filename }
   end
 
   private
@@ -170,6 +175,20 @@ class DatasetBuilder
           "combine-files -merge-layers force -clip bbox=#{bbox_bounds} -o #{combined_filename}"
     `#{cmd}`
     Dir.chdir @data_dir
+  end
+
+  def change_projection(bb_info)
+    puts 'Changing map projection...'
+    cmd = "mapshaper -i #{tmp_dir}/#{combined_filename} -proj +proj=tmerc +k_0=0.9996 " \
+          "+lon_0=#{bb_info[:center_lon]} +lat_0=#{bb_info[:center_lat]} target=* -o '#{tmp_dir}/#{final_filename}'"
+    `#{cmd}`
+  end
+
+  def clean_tmp_dir
+    puts 'Cleaning temporary directory...'
+    Dir.entries(tmp_dir)
+       .reject { |e| File.directory? e or final_filename == e }
+       .each { |f| File.delete "#{tmp_dir}/#{f}" }
   end
 
   # Filename methods
