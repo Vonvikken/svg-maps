@@ -44,7 +44,7 @@ class Region < AdminSubdivisionSet
     self << AdminSubdivision.new('Toscana', 'TOS')
     self << AdminSubdivision.new('Trentino-Alto Adige', 'TAA')
     self << AdminSubdivision.new('Umbria', 'UMB')
-    self << AdminSubdivision.new("Valle d'Aosta", 'VDA', filename: 'valle aosta')
+    self << AdminSubdivision.new("Valle d'Aosta", 'VDA', 'valle aosta')
     self << AdminSubdivision.new('Veneto', 'VEN')
   end
 end

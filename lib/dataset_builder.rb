@@ -81,20 +81,24 @@ class DatasetBuilder
 
     # Neighbouring regions
     @regions.each do |r|
-      puts r.name
-      cmd = "mapshaper -i #{reg_filename r} -target type=polygon -filter 'admin_level==4' " \
-            "-o #{tmp_dir}/#{reg_dataset_filename r}"
+      cmd = "mapshaper -i '#{reg_filename r}' -target type=polygon -filter 'admin_level==4' " \
+            "-o '#{tmp_dir}/#{reg_dataset_filename r}'"
       `#{cmd}`
     end
 
     # Provinces of own region
-    cmd = "mapshaper -i #{own_reg_filename} -target type=polygon -filter 'admin_level==6' "\
-          "-rename-fields ISO3166_2=ISO3166-2 -o #{tmp_dir}/#{reg_prov_dataset_filename}"
+    cmd = if @province.level6
+            "mapshaper -i '#{own_reg_filename}' -target type=polygon -filter 'admin_level==6' "\
+            "-rename-fields ISO3166_2=ISO3166-2 -o '#{tmp_dir}/#{reg_prov_dataset_filename}'"
+          else
+            "mapshaper -i '#{own_reg_filename}' -target type=polygon -filter 'admin_level==4' "\
+            "-o '#{tmp_dir}/#{reg_dataset_filename(@province.reg)}'"
+          end
     `#{cmd}`
 
     # Communes of own region
-    cmd = "mapshaper -i #{own_reg_filename} -target type=polygon -filter 'admin_level==8' "\
-          "-o #{tmp_dir}/#{reg_com_dataset_filename}"
+    cmd = "mapshaper -i '#{own_reg_filename}' -target type=polygon -filter 'admin_level==8' "\
+          "-o '#{tmp_dir}/#{reg_com_dataset_filename}'"
     `#{cmd}`
   end
 
@@ -103,14 +107,19 @@ class DatasetBuilder
 
     puts 'Generating intermediate datasets...'
 
-    # Own province
-    `mapshaper -i #{reg_prov_dataset_filename} -filter 'ISO3166_2=="#{@province.code}"' -o #{prov_dataset_filename}`
+    if @province.level6
+      # Own province
+      `mapshaper -i '#{reg_prov_dataset_filename}' -filter 'ISO3166_2=="#{@province.code}"' -o #{prov_dataset_filename}`
 
-    # Other provinces of the region
-    `mapshaper -i #{reg_prov_dataset_filename} -filter 'ISO3166_2!="#{@province.code}"' -o #{prov_no_dataset_filename}`
+      # Other provinces of the region
+      cmd = "mapshaper -i '#{reg_prov_dataset_filename}' -filter 'ISO3166_2!=\"#{@province.code}\"' "\
+            "-o #{prov_no_dataset_filename}"
+      `#{cmd}`
+    end
 
     # Communes of own province
-    `mapshaper -i #{reg_com_dataset_filename} -clip #{prov_dataset_filename} -o #{com_dataset_filename}`
+    clip = @province.level6 ? prov_dataset_filename : reg_dataset_filename(@province.reg)
+    `mapshaper -i '#{reg_com_dataset_filename}' -clip '#{clip}' -o #{com_dataset_filename}`
 
     Dir.chdir @data_dir
   end
@@ -153,10 +162,11 @@ class DatasetBuilder
 
   def combine_maps(bb_info)
     Dir.chdir tmp_dir
-    regions_list = @regions.map { |r| reg_dataset_filename r }.join ' '
-    states_list = @states.map { |s| state_filename s }.join ' '
+    regions_list = @regions.map { |r| reg_dataset_filename r }.map { |n| "'#{n}'" }.join ' '
+    states_list = @states.map { |s| state_filename s }.map { |n| "'#{n}'" }.join ' '
     bbox_bounds = "#{bb_info[:nw_lon]},#{bb_info[:nw_lat]},#{bb_info[:se_lon]},#{bb_info[:se_lat]}"
-    cmd = "mapshaper -i #{com_dataset_filename} #{prov_no_dataset_filename} #{regions_list} #{states_list} "\
+    no_prov = @province.level6 ? prov_no_dataset_filename : ''
+    cmd = "mapshaper -i #{com_dataset_filename} #{no_prov} #{regions_list} #{states_list} "\
           "combine-files -merge-layers force -clip bbox=#{bbox_bounds} -o #{combined_filename}"
     `#{cmd}`
     Dir.chdir @data_dir

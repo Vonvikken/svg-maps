@@ -25,9 +25,13 @@ class ProvinceElem < AdminSubdivision
   # The region the province/metropolitan city belongs to
   attr_reader :reg
 
-  def initialize(name, abbr, region)
+  # True if the province has a level 6 entity on map, otherwise level 8 will be used. Currently only Aosta doesn't.
+  attr_reader :level6
+
+  def initialize(name, abbr, region, level_6 = true)
     super(name, abbr)
     @reg = Region.instance.find region
+    @level6 = level_6
   end
 
   def code
@@ -69,7 +73,7 @@ class Province < AdminSubdivisionSet
     # Provinces
     self << ProvinceElem.new('Agrigento', 'AG', 'SIC')
     self << ProvinceElem.new('Alessandria', 'AL', 'PIE')
-    self << ProvinceElem.new('Aosta', 'AO', 'VDA')
+    self << ProvinceElem.new('Aosta', 'AO', 'VDA', false)
     self << ProvinceElem.new('Ancona', 'AN', 'MAR')
     self << ProvinceElem.new('Arezzo', 'AR', 'TOS')
     self << ProvinceElem.new('Ascoli Piceno', 'AP', 'MAR')
