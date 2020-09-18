@@ -25,7 +25,7 @@ require_relative 'state'
 
 # Class used for building the intermediate datasets of the maps
 class DatasetBuilder
-  def initialize(options, data_dir)
+  def initialize(options, data_dir, tmp_dir_name)
     @province = Province.instance.find(options[:province])
 
     reg = Region.instance
@@ -42,6 +42,7 @@ class DatasetBuilder
     @e_padding = options[:e_padding]
 
     @data_dir = File.expand_path data_dir
+    @tmp_dir_name = tmp_dir_name
   end
 
   def build_dataset
@@ -54,7 +55,7 @@ class DatasetBuilder
     clean_tmp_dir
 
     puts "Wrote map file #{final_filename}"
-    { tmp_dir: tmp_dir, map_name: final_filename }
+    final_filename
   end
 
   private
@@ -195,7 +196,7 @@ class DatasetBuilder
 
   # Temporary directory path
   def tmp_dir
-    "#{@data_dir}/tmp"
+    "#{@data_dir}/#{@tmp_dir_name}"
   end
 
   # Filename of the region the selected province belongs to
