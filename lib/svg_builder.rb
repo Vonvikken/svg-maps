@@ -17,6 +17,7 @@
 
 # frozen_string_literal: true
 
+require 'nokogiri'
 require_relative 'metadata_reader'
 
 # Class used to generate an SVG map from a GeoJSON dataset
@@ -27,11 +28,13 @@ class SVGBuilder
     @dataset_filename = dataset_filename
     @options = options
     @metadata = nil
+    @svg_doc = nil
   end
 
   def build_svg
     extract_metadata
     convert_to_svg @options[:svg_width]
+    clean_svg
   end
 
   private
@@ -42,7 +45,17 @@ class SVGBuilder
 
   def convert_to_svg(width)
     puts 'Converting GeoJSON to SVG...'
-    `mapshaper -i #{dataset_path} -o format=svg id-field=@id width=#{width} #{base_svg_path}`
+    `mapshaper -i #{dataset_path} -o format=svg id-field=@id width=#{width} #{svg_path}`
+    @svg_doc = File.open(svg_path) { |f| Nokogiri::XML(f) }
+  end
+
+  def clean_svg
+    grp = @svg_doc.css 'g'
+    grp_kids = grp.children
+    grp.remove
+    @svg_doc.root.add_child grp_kids
+
+    File.write svg_path, @svg_doc.to_xml
   end
 
   # Filename methods
@@ -57,9 +70,9 @@ class SVGBuilder
     "#{tmp_dir}/#{@dataset_filename}"
   end
 
-  # Base SVG file name
-  def base_svg_path
-    filename = @dataset_filename.gsub(/(.+)\.geojson$/, '\1-plain.svg')
+  # SVG file name
+  def svg_path
+    filename = @dataset_filename.gsub(/(.+)\.geojson$/, '\1.svg')
     "#{tmp_dir}/#{filename}"
   end
 end
