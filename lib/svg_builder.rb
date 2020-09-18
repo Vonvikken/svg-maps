@@ -37,14 +37,12 @@ class SVGBuilder
   private
 
   def extract_metadata
-    @metadata = MetadataReader.new("#{@data_dir}/#{@tmp_dir_name}/#{@dataset_filename}").metadata
+    @metadata = MetadataReader.new(dataset_path).metadata
   end
 
   def convert_to_svg(width)
     puts 'Converting GeoJSON to SVG...'
-    cmd = "mapshaper -i #{@data_dir}/#{@tmp_dir_name}/#{@dataset_filename} "\
-          "-o format=svg id-field=@id width=#{width} #{@data_dir}/#{@tmp_dir_name}/#{base_svg_filename}"
-    `#{cmd}`
+    `mapshaper -i #{dataset_path} -o format=svg id-field=@id width=#{width} #{base_svg_path}`
   end
 
   # Filename methods
@@ -54,8 +52,14 @@ class SVGBuilder
     "#{@data_dir}/#{@tmp_dir_name}"
   end
 
+  # Full GeoJSON dataset path
+  def dataset_path
+    "#{tmp_dir}/#{@dataset_filename}"
+  end
+
   # Base SVG file name
-  def base_svg_filename
-    @dataset_filename.gsub(/(.+)\.geojson$/, '\1-plain.svg')
+  def base_svg_path
+    filename = @dataset_filename.gsub(/(.+)\.geojson$/, '\1-plain.svg')
+    "#{tmp_dir}/#{filename}"
   end
 end
