@@ -15,7 +15,7 @@
     fill: #FFFFD0;
 }
 
-.comune.interest, .comune:hover {
+.comune.interest {
     stroke: #E0584E;
     fill: #F07568;
 }
@@ -26,8 +26,12 @@
     z-index: -6;
 }
 
-#sea {
-    fill: #9EC7F3;
+svg {
+    background-color: #9EC7F3;
     stroke: none;
-    z-index: -8;
+}
+
+path:hover {
+    stroke-width: 3px;
+    filter: brightness(95%);
 }

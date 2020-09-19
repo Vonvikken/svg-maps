@@ -33,7 +33,8 @@ class Parser
       w_padding: 0.05,
       e_padding: 0.05,
       svg_width: 1600,
-      add_metadata: false
+      add_metadata: false,
+      css_path: 'style/style.css'
     }
   end
 
@@ -91,6 +92,10 @@ class Parser
 
       opts.on('--add-osm-metadata', 'Add OSM metadata to SVG elements (default: false)') do
         @options[:add_metadata] = true
+      end
+
+      opts.on('--css-path PATH', 'Path of the CSS stylesheet (default: "style/style.css")') do |path|
+        @options[:css_path] = path
       end
 
       opts.on('-P', '--list-provinces', 'List province or metropolitan city codes and exit') do

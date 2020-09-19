@@ -19,13 +19,17 @@
 
 require 'nokogiri'
 require_relative 'metadata_reader'
+require_relative 'css_constants'
 
 # Class used to generate an SVG map from a GeoJSON dataset
 class SVGBuilder
-  def initialize(data_dir, tmp_dir_name, dataset_filename, options)
+  include CSSConstants
+
+  def initialize(data_dir, tmp_dir_name, dataset_filename, css_path, options)
     @data_dir = data_dir
     @tmp_dir_name = tmp_dir_name
     @dataset_filename = dataset_filename
+    @css_path = css_path
     @options = options
   end
 
@@ -58,13 +62,42 @@ class SVGBuilder
   end
 
   def add_info_to_svg(doc, metadata)
+    puts 'Adding info and style to SVG...'
+
+    insert_css doc
+
     paths = doc.css 'path'
     paths.each do |path|
       id = path['id']
       md = metadata[id]
-      path['name'] = md['name']
-      path.add_child("<metadata>#{doc.create_cdata(metadata)}</metadata>") if @options[:add_metadata]
+      path.add_child "<title>#{md['name']}</title>"
+      path.add_child "<metadata>#{doc.create_cdata metadata}</metadata>" if @options[:add_metadata]
+
+      path['class'] = case md['admin_level'].to_i
+                      when 2..3
+                        CSSConstants::CLASS_FOREIGN
+                      when 4
+                        CSSConstants::CLASS_REGION
+                      when 6
+                        CSSConstants::CLASS_PROVINCE
+                      when 8
+                        CSSConstants::CLASS_COMUNE
+                      else
+                        ''
+                      end
     end
+  end
+
+  def insert_css(doc)
+    css_content = File.read @css_path
+
+    css_block = <<~CSS
+      <style type="text/css">
+      #{doc.create_cdata css_content}
+      </style>
+    CSS
+
+    doc.root.first_element_child.add_previous_sibling css_block
   end
 
   def write_svg(doc)
