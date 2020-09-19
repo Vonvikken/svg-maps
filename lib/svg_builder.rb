@@ -39,6 +39,8 @@ class SVGBuilder
     clean_svg svg_doc
     add_info_to_svg svg_doc, metadata
     write_svg svg_doc
+    File.delete dataset_path
+    svg_path
   end
 
   private
@@ -116,7 +118,7 @@ class SVGBuilder
     "#{tmp_dir}/#{@dataset_filename}"
   end
 
-  # SVG file name
+  # SVG file path
   def svg_path
     filename = @dataset_filename.gsub(/(.+)\.geojson$/, '\1.svg')
     "#{tmp_dir}/#{filename}"
