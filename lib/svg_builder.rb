@@ -51,7 +51,7 @@ class SVGBuilder
 
   def convert_to_svg(width)
     puts 'Converting GeoJSON to SVG...'
-    `mapshaper -i #{dataset_path} -o format=svg id-field=@id width=#{width} #{svg_path}`
+    `mapshaper -i "#{dataset_path}" -o format=svg id-field=@id width=#{width} "#{svg_path}"`
     File.open(svg_path) { |f| Nokogiri::XML(f) }
   end
 
