@@ -112,7 +112,7 @@ class Province < AdminSubdivisionSet
     self << ProvinceElem.new('Latina', 'LT', 'LAZ')
     self << ProvinceElem.new('Lecce', 'LE', 'PUG')
     self << ProvinceElem.new('Lecco', 'LC', 'LOM')
-    self << ProvinceElem.new('Livorno', 'LV', 'TOS')
+    self << ProvinceElem.new('Livorno', 'LI', 'TOS')
     self << ProvinceElem.new('Lodi', 'LO', 'LOM')
     self << ProvinceElem.new('Lucca', 'LU', 'TOS')
     self << ProvinceElem.new('Macerata', 'MC', 'MAR')
