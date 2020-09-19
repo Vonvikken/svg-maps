@@ -41,7 +41,7 @@ class DatasetBuilder
     @w_padding = options[:w_padding]
     @e_padding = options[:e_padding]
 
-    @data_dir = File.expand_path data_dir
+    @data_dir = data_dir
     @tmp_dir_name = tmp_dir_name
   end
 
