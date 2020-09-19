@@ -148,7 +148,7 @@ class Province < AdminSubdivisionSet
     self << ProvinceElem.new('Siena', 'SI', 'TOS')
     self << ProvinceElem.new('Siracusa', 'SR', 'SIC')
     self << ProvinceElem.new('Sondrio', 'SO', 'LOM')
-    self << ProvinceElem.new('Sud Sardegna', 'SU', 'SAR')
+    self << ProvinceElem.new('Sud Sardegna', 'SD', 'SAR')
     self << ProvinceElem.new('Taranto', 'TA', 'PUG')
     self << ProvinceElem.new('Teramo', 'TE', 'ABR')
     self << ProvinceElem.new('Terni', 'TR', 'UMB')
