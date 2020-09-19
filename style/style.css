@@ -1,0 +1,33 @@
+.region {
+    fill: #F7D3AA;
+    stroke: #A08070;
+    z-index: -4;
+}
+
+.province {
+    fill: #FFFFE9;
+    stroke: #A08070;
+    z-index: -2;
+}
+
+.comune {
+    stroke: #D0C0A0;
+    fill: #FFFFD0;
+}
+
+.comune.interest, .comune:hover {
+    stroke: #E0584E;
+    fill: #F07568;
+}
+
+.foreign {
+    stroke: #646464;
+    fill: #E0E0E0;
+    z-index: -6;
+}
+
+#sea {
+    fill: #9EC7F3;
+    stroke: none;
+    z-index: -8;
+}

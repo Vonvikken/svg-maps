@@ -32,7 +32,8 @@ class Parser
       s_padding: 0.05,
       w_padding: 0.05,
       e_padding: 0.05,
-      svg_width: 1600
+      svg_width: 1600,
+      add_metadata: false
     }
   end
 
@@ -55,7 +56,7 @@ class Parser
         @options[:states] = states
       end
 
-      opts.on('-b', '--bb-padding', Float,
+      opts.on('-b', '--bb-padding PADDING', Float,
               'Padding of the map bounding box in degrees (default: 0.05). ' \
                 'Use to set the padding for all directions.') do |bb_pad|
         @options[:n_padding] = bb_pad
@@ -64,28 +65,32 @@ class Parser
         @options[:e_padding] = bb_pad
       end
 
-      opts.on('-n', '--north-padding', Float,
+      opts.on('-n', '--north-padding PADDING', Float,
               'North padding of the map bounding box in degrees (default: 0.05)') do |n_pad|
         @options[:n_padding] = n_pad
       end
 
-      opts.on('-s', '--south-padding', Float,
+      opts.on('-s', '--south-padding PADDING', Float,
               'South padding of the map bounding box in degrees (default: 0.05)') do |s_pad|
         @options[:s_padding] = s_pad
       end
 
-      opts.on('-w', '--west-padding', Float,
+      opts.on('-w', '--west-padding PADDING', Float,
               'West padding of the map bounding box in degrees (default: 0.05)') do |w_pad|
         @options[:w_padding] = w_pad
       end
 
-      opts.on('-e', '--east-padding', Float,
+      opts.on('-e', '--east-padding PADDING', Float,
               'East padding of the map bounding box in degrees (default: 0.05)') do |e_pad|
         @options[:e_padding] = e_pad
       end
 
-      opts.on('--svg-width', Integer, 'Width of the SVG map in pixels (default: 1600') do |width|
+      opts.on('--svg-width WIDTH', Integer, 'Width of the SVG map in pixels (default: 1600)') do |width|
         @options[:svg_width] = width
+      end
+
+      opts.on('--add-osm-metadata', 'Add OSM metadata to SVG elements (default: false)') do
+        @options[:add_metadata] = true
       end
 
       opts.on('-P', '--list-provinces', 'List province or metropolitan city codes and exit') do

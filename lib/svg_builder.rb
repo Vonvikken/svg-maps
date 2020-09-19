@@ -27,35 +27,48 @@ class SVGBuilder
     @tmp_dir_name = tmp_dir_name
     @dataset_filename = dataset_filename
     @options = options
-    @metadata = nil
-    @svg_doc = nil
   end
 
   def build_svg
-    extract_metadata
-    convert_to_svg @options[:svg_width]
-    clean_svg
+    metadata = extract_metadata
+    svg_doc = convert_to_svg @options[:svg_width]
+    clean_svg svg_doc
+    add_info_to_svg svg_doc, metadata
+    write_svg svg_doc
   end
 
   private
 
   def extract_metadata
-    @metadata = MetadataReader.new(dataset_path).metadata
+    MetadataReader.new(dataset_path).metadata
   end
 
   def convert_to_svg(width)
     puts 'Converting GeoJSON to SVG...'
     `mapshaper -i #{dataset_path} -o format=svg id-field=@id width=#{width} #{svg_path}`
-    @svg_doc = File.open(svg_path) { |f| Nokogiri::XML(f) }
+    File.open(svg_path) { |f| Nokogiri::XML(f) }
   end
 
-  def clean_svg
-    grp = @svg_doc.css 'g'
+  def clean_svg(doc)
+    puts 'Cleaning SVG...'
+    grp = doc.css 'g'
     grp_kids = grp.children
     grp.remove
-    @svg_doc.root.add_child grp_kids
+    doc.root.add_child grp_kids
+  end
 
-    File.write svg_path, @svg_doc.to_xml
+  def add_info_to_svg(doc, metadata)
+    paths = doc.css 'path'
+    paths.each do |path|
+      id = path['id']
+      md = metadata[id]
+      path['name'] = md['name']
+      path.add_child("<metadata>#{doc.create_cdata(metadata)}</metadata>") if @options[:add_metadata]
+    end
+  end
+
+  def write_svg(doc)
+    File.write svg_path, doc.to_xml
   end
 
   # Filename methods
