@@ -48,6 +48,7 @@ class DatasetBuilder
 
     @data_dir = data_dir
     @tmp_dir_name = tmp_dir_name
+    @no_clean = options[:no_clean]
   end
 
   def build_dataset
@@ -57,7 +58,7 @@ class DatasetBuilder
     bb_info = calc_coordinates
     combine_maps bb_info
     change_projection bb_info
-    clean_tmp_dir
+    clean_tmp_dir unless @no_clean
 
     LOGGER.info "Wrote map file #{final_file_path}"
     final_file_path

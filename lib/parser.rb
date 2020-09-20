@@ -34,6 +34,7 @@ class Parser
       e_padding: 0.05,
       svg_width: 1600,
       add_metadata: false,
+      no_clean: false,
       css_path: 'style/style.css'
     }
   end
@@ -96,6 +97,10 @@ class Parser
 
       opts.on('--css-path PATH', 'Path of the CSS stylesheet (default: "style/style.css")') do |path|
         @options[:css_path] = path
+      end
+
+      opts.on('--no-clean-tmp', 'Don\'t clean temporary directory after completion (default: false)') do
+        @options[:no_clean] = true
       end
 
       opts.on('-P', '--list-provinces', 'List province or metropolitan city codes and exit') do

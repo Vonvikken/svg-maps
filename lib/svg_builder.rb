@@ -41,7 +41,7 @@ class SVGBuilder
     clean_svg svg_doc
     add_info_to_svg svg_doc, metadata
     write_svg svg_doc
-    File.delete @dataset_file_path
+    File.delete @dataset_file_path unless @options[:no_clean]
     svg_path
   end
 
