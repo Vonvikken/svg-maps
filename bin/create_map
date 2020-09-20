@@ -9,7 +9,7 @@ parser = SVGMapsItaly::Parser.new
 parser.parse(ARGV)
 options = parser.options
 
-data_dir = File.expand_path 'data'
+data_dir = File.expand_path options[:data_dir]
 
 out_dir_name = 'out'
 out_dir = "#{data_dir}/#{out_dir_name}"

@@ -29,6 +29,7 @@ module SVGMapsItaly
 
     def initialize
       @options = {
+        data_dir: 'data',
         extract_comuni: false,
         n_padding: 0.05,
         s_padding: 0.05,
@@ -46,6 +47,10 @@ module SVGMapsItaly
         opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
         opts.separator ''
         opts.separator 'Options:'
+
+        opts.on('-d', '--data-dir DATA_DIR', 'Path of the data directory (default: "data")') do |data_dir|
+          @options[:data_dir] = data_dir
+        end
 
         opts.on('-p', '--province PROV', 'Code of the province or metropolitan city to display (required)') do |prov|
           @options[:province] = prov
