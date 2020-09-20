@@ -85,7 +85,13 @@ class SVGBuilder
                       when 6
                         CSSConstants::CLASS_PROVINCE
                       when 8
-                        CSSConstants::CLASS_COMUNE
+                        # Italian name takes precedence for multi-lingual names
+                        name_comune = md['name:it'] || md['name']
+                        if @options[:comune] == name_comune
+                          "#{CSSConstants::CLASS_COMUNE} #{CSSConstants::CLASS_INTEREST}"
+                        else
+                          CSSConstants::CLASS_COMUNE
+                        end
                       else
                         ''
                       end
@@ -118,6 +124,7 @@ class SVGBuilder
 
   # SVG file path
   def svg_path
-    @dataset_file_path.gsub(/(.+)\.geojson$/, '\1.svg')
+    name = @options[:comune] || '\1'
+    @dataset_file_path.gsub(/(.+)\.geojson$/, "#{name}.svg")
   end
 end

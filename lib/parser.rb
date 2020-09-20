@@ -58,6 +58,10 @@ class Parser
         @options[:states] = states
       end
 
+      opts.on('-c', '--comune COMUNE', 'Highlights the territory of a comune given its name (in Italian).') do |com|
+        @options[:comune] = com
+      end
+
       opts.on('-b', '--bb-padding PADDING', Float,
               'Padding of the map bounding box in degrees (default: 0.05). ' \
               'Use this to set the padding for all directions.') do |bb_pad|
