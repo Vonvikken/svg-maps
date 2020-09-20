@@ -19,12 +19,15 @@
 
 require 'English'
 require 'open3'
+require_relative 'logger_utility'
 require_relative 'province'
 require_relative 'region'
 require_relative 'state'
 
 # Class used for building the intermediate datasets of the maps
 class DatasetBuilder
+  include LoggerUtility
+
   def initialize(options, data_dir, tmp_dir_name)
     @province = Province.instance.find(options[:province])
 
@@ -56,23 +59,24 @@ class DatasetBuilder
     change_projection bb_info
     clean_tmp_dir
 
-    puts "Wrote map file #{final_filename}"
+    LOGGER.info "Wrote map file #{final_filename}"
     final_filename
   end
 
   private
 
   def check_prerequisites
-    puts 'Checking if mapshaper is installed...'
+    LOGGER.info 'Checking prerequisites...'
+    LOGGER.debug 'Checking if mapshaper is installed...'
     `mapshaper -v`
     abort 'mapshaper not installed!' unless $CHILD_STATUS.success?
 
-    puts 'Checking data directory...'
+    LOGGER.debug 'Checking data directory...'
     abort 'Directory "data" not found!' unless Dir.exist? @data_dir
 
     Dir.mkdir tmp_dir unless File.exist? tmp_dir
 
-    puts 'Checking source datasets...'
+    LOGGER.debug 'Checking source datasets...'
     abort "File #{own_reg_filename} does not exist!" unless File.exist? own_reg_filename
 
     @regions.map { |r| reg_filename r }.each do |f|
@@ -85,10 +89,11 @@ class DatasetBuilder
   end
 
   def initial_datasets
-    puts 'Extracting initial datasets...'
+    LOGGER.info 'Extracting initial datasets...'
 
     # Neighbouring regions
     @regions.each do |r|
+      LOGGER.debug "Region #{r.name}"
       cmd = "mapshaper -i '#{reg_filename r}' -target type=polygon -filter 'admin_level==4' " \
             "-o '#{tmp_dir}/#{reg_dataset_filename r}'"
       `#{cmd}`
@@ -113,7 +118,7 @@ class DatasetBuilder
   def intermediate_datasets
     Dir.chdir tmp_dir
 
-    puts 'Generating intermediate datasets...'
+    LOGGER.info 'Generating intermediate datasets...'
 
     if @province.level6
       # Own province
@@ -133,7 +138,7 @@ class DatasetBuilder
   end
 
   def calc_coordinates
-    puts 'Calculating coordinates...'
+    LOGGER.info 'Calculating coordinates...'
 
     # Mapshaper sends output to STDERR...
     _, info, = Open3.capture3("mapshaper -i #{tmp_dir}/#{com_dataset_filename} -info")
@@ -145,18 +150,18 @@ class DatasetBuilder
     nw_lat = m[2].to_f
     se_lon = m[3].to_f
     se_lat = m[4].to_f
-    puts "Bounding box: NW (#{nw_lat}, #{nw_lon}) SE (#{se_lat}, #{se_lon})"
+    LOGGER.debug "Bounding box: NW (#{nw_lat}, #{nw_lon}) SE (#{se_lat}, #{se_lon})"
 
     nw_lon -= @padding[:w]
     nw_lat -= @padding[:n]
     se_lon += @padding[:e]
     se_lat += @padding[:s]
-    puts "Padded bounding box: NW (#{nw_lat}, #{nw_lon}) SE (#{se_lat}, #{se_lon})"
+    LOGGER.debug "Padded bounding box: NW (#{nw_lat}, #{nw_lon}) SE (#{se_lat}, #{se_lon})"
 
     center_lon = (nw_lon + se_lon) / 2
     center_lat = (nw_lat + se_lat) / 2
 
-    puts "Center point coordinates are (#{center_lat}, #{center_lon})"
+    LOGGER.debug "Center point coordinates are (#{center_lat}, #{center_lon})"
 
     {
       nw_lon: nw_lon,
@@ -181,14 +186,14 @@ class DatasetBuilder
   end
 
   def change_projection(bb_info)
-    puts 'Changing map projection...'
+    LOGGER.info 'Changing map projection...'
     cmd = "mapshaper -i #{tmp_dir}/#{combined_filename} -proj +proj=tmerc +k_0=0.9996 " \
           "+lon_0=#{bb_info[:center_lon]} +lat_0=#{bb_info[:center_lat]} target=* -o '#{tmp_dir}/#{final_filename}'"
     `#{cmd}`
   end
 
   def clean_tmp_dir
-    puts 'Cleaning temporary directory...'
+    LOGGER.info 'Cleaning temporary directory...'
     Dir.entries(tmp_dir)
        .reject { |e| File.directory? e or final_filename == e }
        .each { |f| File.delete "#{tmp_dir}/#{f}" }

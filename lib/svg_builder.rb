@@ -18,12 +18,14 @@
 # frozen_string_literal: true
 
 require 'nokogiri'
+require_relative 'logger_utility'
 require_relative 'metadata_reader'
 require_relative 'css_constants'
 
 # Class used to generate an SVG map from a GeoJSON dataset
 class SVGBuilder
   include CSSConstants
+  include LoggerUtility
 
   def initialize(data_dir, tmp_dir_name, dataset_filename, css_path, options)
     @data_dir = data_dir
@@ -50,13 +52,13 @@ class SVGBuilder
   end
 
   def convert_to_svg(width)
-    puts 'Converting GeoJSON to SVG...'
+    LOGGER.info 'Converting GeoJSON to SVG...'
     `mapshaper -i "#{dataset_path}" -o format=svg id-field=@id width=#{width} "#{svg_path}"`
     File.open(svg_path) { |f| Nokogiri::XML(f) }
   end
 
   def clean_svg(doc)
-    puts 'Cleaning SVG...'
+    LOGGER.info 'Cleaning SVG...'
     grp = doc.css 'g'
     grp_kids = grp.children
     grp.remove
@@ -64,7 +66,7 @@ class SVGBuilder
   end
 
   def add_info_to_svg(doc, metadata)
-    puts 'Adding info and style to SVG...'
+    LOGGER.info 'Adding info and style to SVG...'
 
     insert_css doc
 
@@ -103,6 +105,7 @@ class SVGBuilder
   end
 
   def write_svg(doc)
+    LOGGER.info 'Writing final SVG...'
     File.write svg_path, doc.to_xml
   end
 
