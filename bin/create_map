@@ -20,9 +20,9 @@ tmp_dir = "#{data_dir}/#{tmp_dir_name}"
 Dir.mkdir tmp_dir unless File.exist? tmp_dir
 
 css_path = File.expand_path options[:css_path]
-builder = DatasetBuilder.new options, data_dir, tmp_dir
+builder = SVGMapsItaly::DatasetBuilder.new options, data_dir, tmp_dir
 geojson_name = builder.build_dataset
-svg_builder = SVGBuilder.new data_dir, geojson_name, css_path, options
+svg_builder = SVGMapsItaly::SVGBuilder.new data_dir, geojson_name, css_path, options
 svg_out = svg_builder.build_svg
 
 FileUtils.mv(svg_out[:svg_path], out_dir)
