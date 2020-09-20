@@ -37,8 +37,7 @@ module SVGMapsItaly
         e_padding: 0.05,
         svg_width: 1600,
         add_metadata: false,
-        no_clean: false,
-        css_path: 'style/style.css'
+        no_clean: false
       }
     end
 
