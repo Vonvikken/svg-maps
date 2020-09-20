@@ -36,10 +36,12 @@ class DatasetBuilder
     @states = []
     options[:states]&.each { |s| @states << st.find(s) }
 
-    @n_padding = options[:n_padding]
-    @s_padding = options[:s_padding]
-    @w_padding = options[:w_padding]
-    @e_padding = options[:e_padding]
+    @padding = {
+      n: options[:n_padding],
+      s: options[:s_padding],
+      w: options[:w_padding],
+      e: options[:e_padding]
+    }
 
     @data_dir = data_dir
     @tmp_dir_name = tmp_dir_name
@@ -145,10 +147,10 @@ class DatasetBuilder
     se_lat = m[4].to_f
     puts "Bounding box: NW (#{nw_lat}, #{nw_lon}) SE (#{se_lat}, #{se_lon})"
 
-    nw_lon -= @w_padding
-    nw_lat -= @n_padding
-    se_lon += @e_padding
-    se_lat += @s_padding
+    nw_lon -= @padding[:w]
+    nw_lat -= @padding[:n]
+    se_lon += @padding[:e]
+    se_lat += @padding[:s]
     puts "Padded bounding box: NW (#{nw_lat}, #{nw_lon}) SE (#{se_lat}, #{se_lon})"
 
     center_lon = (nw_lon + se_lon) / 2
