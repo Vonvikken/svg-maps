@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+set -vx
+
+bundle install
+
+npm list -g mapshaper --depth 1 > /dev/null 2>&1
+# shellcheck disable=SC2181
+if [ $? -eq 0 ]
+then
+  echo "mapshaper is installed"
+else
+  echo "Please install mapshaper via 'npm install -g mapshaper'" >&2
+fi
