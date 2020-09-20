@@ -1,4 +1,4 @@
-# Class:     /home/vonvikken/svg-maps/lib/state.rb
+# Class:     /home/vonvikken/svg-maps/lib/svg_maps_italy.rb
 # Author:    Vincenzo Stornanti <von.vikken@gmail.com>
 #
 # Copyright 2020 Vincenzo Stornanti
@@ -17,21 +17,9 @@
 
 # frozen_string_literal: true
 
-require_relative 'admin_subdivision'
-require 'singleton'
-
-# Italian neighboring states
-class State < AdminSubdivisionSet
-  include Singleton
-
-  def initialize
-    super
-
-    self << AdminSubdivision.new('Slovenija', 'SL', 'slovenia')
-    self << AdminSubdivision.new('Österreich', 'AT', 'austria')
-    self << AdminSubdivision.new('Svizzera', 'CH', 'svizzera')
-    self << AdminSubdivision.new('France', 'FR', 'francia')
-    self << AdminSubdivision.new('San Marino', 'SM', 'san marino')
-    self << AdminSubdivision.new('Città del Vaticano', 'CV', 'vaticano')
-  end
+# Main application module
+module SVGMapsItaly
+  require 'svg_maps_italy/parser'
+  require 'svg_maps_italy/dataset_builder'
+  require 'svg_maps_italy/svg_builder'
 end
