@@ -27,10 +27,10 @@ class SVGBuilder
   include CSSConstants
   include LoggerUtility
 
-  def initialize(data_dir, tmp_dir_name, dataset_filename, css_path, options)
+  def initialize(data_dir, tmp_dir_name, dataset_file_path, css_path, options)
     @data_dir = data_dir
     @tmp_dir_name = tmp_dir_name
-    @dataset_filename = dataset_filename
+    @dataset_file_path = dataset_file_path
     @css_path = css_path
     @options = options
   end
@@ -41,19 +41,19 @@ class SVGBuilder
     clean_svg svg_doc
     add_info_to_svg svg_doc, metadata
     write_svg svg_doc
-    File.delete dataset_path
+    File.delete @dataset_file_path
     svg_path
   end
 
   private
 
   def extract_metadata
-    MetadataReader.new(dataset_path).metadata
+    MetadataReader.new(@dataset_file_path).metadata
   end
 
   def convert_to_svg(width)
     LOGGER.info 'Converting GeoJSON to SVG...'
-    `mapshaper -i "#{dataset_path}" -o format=svg id-field=@id width=#{width} "#{svg_path}"`
+    `mapshaper -i "#{@dataset_file_path}" -o format=svg id-field=@id width=#{width} "#{svg_path}"`
     File.open(svg_path) { |f| Nokogiri::XML(f) }
   end
 
@@ -116,14 +116,8 @@ class SVGBuilder
     "#{@data_dir}/#{@tmp_dir_name}"
   end
 
-  # Full GeoJSON dataset path
-  def dataset_path
-    "#{tmp_dir}/#{@dataset_filename}"
-  end
-
   # SVG file path
   def svg_path
-    filename = @dataset_filename.gsub(/(.+)\.geojson$/, '\1.svg')
-    "#{tmp_dir}/#{filename}"
+    @dataset_file_path.gsub(/(.+)\.geojson$/, '\1.svg')
   end
 end

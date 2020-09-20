@@ -59,8 +59,8 @@ class DatasetBuilder
     change_projection bb_info
     clean_tmp_dir
 
-    LOGGER.info "Wrote map file #{final_filename}"
-    final_filename
+    LOGGER.info "Wrote map file #{final_file_path}"
+    final_file_path
   end
 
   private
@@ -77,13 +77,13 @@ class DatasetBuilder
     Dir.mkdir tmp_dir unless File.exist? tmp_dir
 
     LOGGER.debug 'Checking source datasets...'
-    abort "File #{own_reg_filename} does not exist!" unless File.exist? own_reg_filename
+    abort "File #{own_reg_file_path} does not exist!" unless File.exist? own_reg_file_path
 
-    @regions.map { |r| reg_filename r }.each do |f|
+    @regions.map { |r| reg_file_path r }.each do |f|
       abort "File #{f} does not exits!" unless File.exist? f
     end
 
-    @states.map { |s| state_filename s }.each do |f|
+    @states.map { |s| state_file_path s }.each do |f|
       abort "File #{f} does not exits!" unless File.exist? f
     end
   end
@@ -94,54 +94,52 @@ class DatasetBuilder
     # Neighbouring regions
     @regions.each do |r|
       LOGGER.debug "Region #{r.name}"
-      cmd = "mapshaper -i '#{reg_filename r}' -target type=polygon -filter 'admin_level==4' " \
-            "-o '#{tmp_dir}/#{reg_dataset_filename r}'"
+      cmd = "mapshaper -i '#{reg_file_path r}' -target type=polygon -filter 'admin_level==4' " \
+            "-o '#{reg_dataset_file_path r}'"
       `#{cmd}`
     end
 
     # Provinces of own region
     cmd = if @province.level6
-            "mapshaper -i '#{own_reg_filename}' -target type=polygon -filter 'admin_level==6' "\
-            "-rename-fields ISO3166_2=ISO3166-2 -o '#{tmp_dir}/#{reg_prov_dataset_filename}'"
+            "mapshaper -i '#{own_reg_file_path}' -target type=polygon -filter 'admin_level==6' "\
+            "-rename-fields ISO3166_2=ISO3166-2 -o '#{reg_prov_dataset_file_path}'"
           else
-            "mapshaper -i '#{own_reg_filename}' -target type=polygon -filter 'admin_level==4' "\
-            "-o '#{tmp_dir}/#{reg_dataset_filename(@province.reg)}'"
+            "mapshaper -i '#{own_reg_file_path}' -target type=polygon -filter 'admin_level==4' "\
+            "-o '#{reg_dataset_file_path(@province.reg)}'"
           end
     `#{cmd}`
 
     # Communes of own region
-    cmd = "mapshaper -i '#{own_reg_filename}' -target type=polygon -filter 'admin_level==8' "\
-          "-o '#{tmp_dir}/#{reg_com_dataset_filename}'"
+    cmd = "mapshaper -i '#{own_reg_file_path}' -target type=polygon -filter 'admin_level==8' "\
+          "-o '#{reg_com_dataset_file_path}'"
     `#{cmd}`
   end
 
   def intermediate_datasets
-    Dir.chdir tmp_dir
-
     LOGGER.info 'Generating intermediate datasets...'
 
     if @province.level6
       # Own province
-      `mapshaper -i '#{reg_prov_dataset_filename}' -filter 'ISO3166_2=="#{@province.code}"' -o #{prov_dataset_filename}`
+      cmd = "mapshaper -i '#{reg_prov_dataset_file_path}' -filter 'ISO3166_2==\"#{@province.code}\"' "\
+            "-o #{prov_dataset_file_path}"
+      `#{cmd}`
 
       # Other provinces of the region
-      cmd = "mapshaper -i '#{reg_prov_dataset_filename}' -filter 'ISO3166_2!=\"#{@province.code}\"' "\
-            "-o #{prov_no_dataset_filename}"
+      cmd = "mapshaper -i '#{reg_prov_dataset_file_path}' -filter 'ISO3166_2!=\"#{@province.code}\"' "\
+            "-o #{prov_no_dataset_file_path}"
       `#{cmd}`
     end
 
     # Communes of own province
-    clip = @province.level6 ? prov_dataset_filename : reg_dataset_filename(@province.reg)
-    `mapshaper -i '#{reg_com_dataset_filename}' -clip '#{clip}' -o #{com_dataset_filename}`
-
-    Dir.chdir @data_dir
+    clip = @province.level6 ? prov_dataset_file_path : reg_dataset_file_path(@province.reg)
+    `mapshaper -i '#{reg_com_dataset_file_path}' -clip '#{clip}' -o #{com_dataset_file_path}`
   end
 
   def calc_coordinates
     LOGGER.info 'Calculating coordinates...'
 
     # Mapshaper sends output to STDERR...
-    _, info, = Open3.capture3("mapshaper -i #{tmp_dir}/#{com_dataset_filename} -info")
+    _, info, = Open3.capture3("mapshaper -i #{com_dataset_file_path} -info")
     info_lines = info.split "\n"
     matches = info_lines.map { |l| l.match(/^Bounds:\s+(\d{1,3}.\d+),(\d{1,3}.\d+),(\d{1,3}.\d+),(\d{1,3}.\d+)/) }
     m = matches.reject(&:nil?).first
@@ -174,28 +172,26 @@ class DatasetBuilder
   end
 
   def combine_maps(bb_info)
-    Dir.chdir tmp_dir
-    regions_list = @regions.map { |r| reg_dataset_filename r }.map { |n| "'#{n}'" }.join ' '
-    states_list = @states.map { |s| state_filename s }.map { |n| "'#{n}'" }.join ' '
+    regions_list = @regions.map { |r| reg_dataset_file_path r }.map { |n| "'#{n}'" }.join ' '
+    states_list = @states.map { |s| state_file_path s }.map { |n| "'#{n}'" }.join ' '
     bbox_bounds = "#{bb_info[:nw_lon]},#{bb_info[:nw_lat]},#{bb_info[:se_lon]},#{bb_info[:se_lat]}"
-    no_prov = @province.level6 ? prov_no_dataset_filename : ''
-    cmd = "mapshaper -i #{com_dataset_filename} #{no_prov} #{regions_list} #{states_list} "\
-          "combine-files -merge-layers force -clip bbox=#{bbox_bounds} -o #{combined_filename}"
+    no_prov = @province.level6 ? prov_no_dataset_file_path : ''
+    cmd = "mapshaper -i #{com_dataset_file_path} #{no_prov} #{regions_list} #{states_list} "\
+          "combine-files -merge-layers force -clip bbox=#{bbox_bounds} -o #{combined_file_path}"
     `#{cmd}`
-    Dir.chdir @data_dir
   end
 
   def change_projection(bb_info)
     LOGGER.info 'Changing map projection...'
-    cmd = "mapshaper -i #{tmp_dir}/#{combined_filename} -proj +proj=tmerc +k_0=0.9996 " \
-          "+lon_0=#{bb_info[:center_lon]} +lat_0=#{bb_info[:center_lat]} target=* -o '#{tmp_dir}/#{final_filename}'"
+    cmd = "mapshaper -i #{combined_file_path} -proj +proj=tmerc +k_0=0.9996 " \
+          "+lon_0=#{bb_info[:center_lon]} +lat_0=#{bb_info[:center_lat]} target=* -o '#{final_file_path}'"
     `#{cmd}`
   end
 
   def clean_tmp_dir
     LOGGER.info 'Cleaning temporary directory...'
     Dir.entries(tmp_dir)
-       .reject { |e| File.directory? e or final_filename == e }
+       .reject { |e| File.directory? e or final_map_name == e }
        .each { |f| File.delete "#{tmp_dir}/#{f}" }
   end
 
@@ -206,58 +202,63 @@ class DatasetBuilder
     "#{@data_dir}/#{@tmp_dir_name}"
   end
 
-  # Filename of the region the selected province belongs to
-  def own_reg_filename
+  # File path of the region the selected province belongs to
+  def own_reg_file_path
     "#{@data_dir}/regioni/#{@province.reg.filename}.geojson"
   end
 
-  # Filename of the given region
-  def reg_filename(region)
+  # File path of the given region
+  def reg_file_path(region)
     "#{@data_dir}/regioni/#{region.filename}.geojson"
   end
 
-  # Filename of the given state
-  def state_filename(state)
+  # File path of the given state
+  def state_file_path(state)
     "#{@data_dir}/stati/#{state.filename}.geojson"
   end
 
-  # Filename of the intermediate dataset with the boundaries of the given region
-  def reg_dataset_filename(region)
-    "#{region.filename}-4.geojson"
+  # File path of the intermediate dataset with the boundaries of the given region
+  def reg_dataset_file_path(region)
+    "#{tmp_dir}/#{region.filename}-4.geojson"
   end
 
-  # Filename of the intermediate dataset with all the province boundaries in the region of the selected province
-  def reg_prov_dataset_filename
-    "#{@province.reg.filename}-6.geojson"
+  # File path of the intermediate dataset with all the province boundaries in the region of the selected province
+  def reg_prov_dataset_file_path
+    "#{tmp_dir}/#{@province.reg.filename}-6.geojson"
   end
 
-  # Filename of the intermediate dataset with the commune boundaries in the region of the selected province
-  def reg_com_dataset_filename
-    "#{@province.reg.filename}-8.geojson"
+  # File path of the intermediate dataset with the commune boundaries in the region of the selected province
+  def reg_com_dataset_file_path
+    "#{tmp_dir}/#{@province.reg.filename}-8.geojson"
   end
 
-  # Filename of the intermediate dataset with the boundaries of the selected province
-  def prov_dataset_filename
-    "#{@province.code}-6.geojson"
+  # File path of the intermediate dataset with the boundaries of the selected province
+  def prov_dataset_file_path
+    "#{tmp_dir}/#{@province.code}-6.geojson"
   end
 
-  # Filename of the intermediate dataset with the boundaries of the provinces within the region except the selected one
-  def prov_no_dataset_filename
-    "#{@province.code}-6_no.geojson"
+  # File path of the intermediate dataset with the boundaries of the provinces within the region except the selected one
+  def prov_no_dataset_file_path
+    "#{tmp_dir}/#{@province.code}-6_no.geojson"
   end
 
-  # Filename of the intermediate dataset with the boundaries of the communes within the selected province
-  def com_dataset_filename
-    "#{@province.code}-8.geojson"
+  # File path of the intermediate dataset with the boundaries of the communes within the selected province
+  def com_dataset_file_path
+    "#{tmp_dir}/#{@province.code}-8.geojson"
   end
 
-  # Filename of the combined map
-  def combined_filename
-    "#{@province.code}-combined.geojson"
+  # File path of the combined map
+  def combined_file_path
+    "#{tmp_dir}/#{@province.code}-combined.geojson"
   end
 
-  # Final name of the map
-  def final_filename
+  # Filename of the final map
+  def final_map_name
     "#{@province.name}.geojson"
+  end
+
+  # File path of the final map
+  def final_file_path
+    "#{tmp_dir}/#{final_map_name}"
   end
 end
