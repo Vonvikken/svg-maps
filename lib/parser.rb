@@ -45,7 +45,7 @@ class Parser
       opts.separator ''
       opts.separator 'Options:'
 
-      opts.on('-p', '--province PROV', 'Code of the province or metropolitan city to display') do |prov|
+      opts.on('-p', '--province PROV', 'Code of the province or metropolitan city to display (required)') do |prov|
         @options[:province] = prov
       end
 
@@ -60,7 +60,7 @@ class Parser
 
       opts.on('-b', '--bb-padding PADDING', Float,
               'Padding of the map bounding box in degrees (default: 0.05). ' \
-                'Use to set the padding for all directions.') do |bb_pad|
+              'Use this to set the padding for all directions.') do |bb_pad|
         @options[:n_padding] = bb_pad
         @options[:s_padding] = bb_pad
         @options[:w_padding] = bb_pad
@@ -87,6 +87,21 @@ class Parser
         @options[:e_padding] = e_pad
       end
 
+      opts.on('-P', '--list-provinces', 'List province or metropolitan city codes and exit') do
+        puts Province.instance
+        exit 0
+      end
+
+      opts.on('-R', '--list-regions', 'List region codes and exit') do
+        puts Region.instance
+        exit 0
+      end
+
+      opts.on('-F', '--list-foreign', 'List neighboring foreign state codes and exit') do
+        puts State.instance
+        exit 0
+      end
+
       opts.on('--svg-width WIDTH', Integer, 'Width of the SVG map in pixels (default: 1600)') do |width|
         @options[:svg_width] = width
       end
@@ -103,23 +118,19 @@ class Parser
         @options[:no_clean] = true
       end
 
-      opts.on('-P', '--list-provinces', 'List province or metropolitan city codes and exit') do
-        puts Province.instance
-        exit 0
-      end
-
-      opts.on('-R', '--list-regions', 'List region codes and exit') do
-        puts Region.instance
-        exit 0
-      end
-
-      opts.on('-F', '--list-foreign', 'List neighboring foreign state codes and exit') do
-        puts State.instance
+      opts.on_tail('-h', '--help', 'Show this message') do
+        puts opts
         exit 0
       end
     end
 
-    parser.parse!(args)
+    begin
+      raise OptionParser::MissingArgument if args.length.zero?
+
+      parser.parse!(args)
+    rescue OptionParser::MissingArgument
+      abort parser.help
+    end
   end
 
   def inspect
