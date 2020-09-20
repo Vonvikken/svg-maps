@@ -28,7 +28,7 @@ require_relative 'state'
 class DatasetBuilder
   include LoggerUtility
 
-  def initialize(options, data_dir, tmp_dir_name)
+  def initialize(options, data_dir, tmp_dir)
     @province = Province.instance.find(options[:province])
 
     reg = Region.instance
@@ -47,7 +47,7 @@ class DatasetBuilder
     }
 
     @data_dir = data_dir
-    @tmp_dir_name = tmp_dir_name
+    @tmp_dir = tmp_dir
     @no_clean = options[:no_clean]
   end
 
@@ -74,8 +74,6 @@ class DatasetBuilder
 
     LOGGER.debug 'Checking data directory...'
     abort 'Directory "data" not found!' unless Dir.exist? @data_dir
-
-    Dir.mkdir tmp_dir unless File.exist? tmp_dir
 
     LOGGER.debug 'Checking source datasets...'
     abort "File #{own_reg_file_path} does not exist!" unless File.exist? own_reg_file_path
@@ -191,17 +189,12 @@ class DatasetBuilder
 
   def clean_tmp_dir
     LOGGER.info 'Cleaning temporary directory...'
-    Dir.entries(tmp_dir)
+    Dir.entries(@tmp_dir)
        .reject { |e| File.directory? e or final_map_name == e }
-       .each { |f| File.delete "#{tmp_dir}/#{f}" }
+       .each { |f| File.delete "#{@tmp_dir}/#{f}" }
   end
 
   # Filename methods
-
-  # Temporary directory path
-  def tmp_dir
-    "#{@data_dir}/#{@tmp_dir_name}"
-  end
 
   # File path of the region the selected province belongs to
   def own_reg_file_path
@@ -220,37 +213,37 @@ class DatasetBuilder
 
   # File path of the intermediate dataset with the boundaries of the given region
   def reg_dataset_file_path(region)
-    "#{tmp_dir}/#{region.filename}-4.geojson"
+    "#{@tmp_dir}/#{region.filename}-4.geojson"
   end
 
   # File path of the intermediate dataset with all the province boundaries in the region of the selected province
   def reg_prov_dataset_file_path
-    "#{tmp_dir}/#{@province.reg.filename}-6.geojson"
+    "#{@tmp_dir}/#{@province.reg.filename}-6.geojson"
   end
 
   # File path of the intermediate dataset with the commune boundaries in the region of the selected province
   def reg_com_dataset_file_path
-    "#{tmp_dir}/#{@province.reg.filename}-8.geojson"
+    "#{@tmp_dir}/#{@province.reg.filename}-8.geojson"
   end
 
   # File path of the intermediate dataset with the boundaries of the selected province
   def prov_dataset_file_path
-    "#{tmp_dir}/#{@province.code}-6.geojson"
+    "#{@tmp_dir}/#{@province.code}-6.geojson"
   end
 
   # File path of the intermediate dataset with the boundaries of the provinces within the region except the selected one
   def prov_no_dataset_file_path
-    "#{tmp_dir}/#{@province.code}-6_no.geojson"
+    "#{@tmp_dir}/#{@province.code}-6_no.geojson"
   end
 
   # File path of the intermediate dataset with the boundaries of the communes within the selected province
   def com_dataset_file_path
-    "#{tmp_dir}/#{@province.code}-8.geojson"
+    "#{@tmp_dir}/#{@province.code}-8.geojson"
   end
 
   # File path of the combined map
   def combined_file_path
-    "#{tmp_dir}/#{@province.code}-combined.geojson"
+    "#{@tmp_dir}/#{@province.code}-combined.geojson"
   end
 
   # Filename of the final map
@@ -260,6 +253,6 @@ class DatasetBuilder
 
   # File path of the final map
   def final_file_path
-    "#{tmp_dir}/#{final_map_name}"
+    "#{@tmp_dir}/#{final_map_name}"
   end
 end

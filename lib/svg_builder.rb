@@ -27,9 +27,8 @@ class SVGBuilder
   include CSSConstants
   include LoggerUtility
 
-  def initialize(data_dir, tmp_dir_name, dataset_file_path, css_path, options)
+  def initialize(data_dir, dataset_file_path, css_path, options)
     @data_dir = data_dir
-    @tmp_dir_name = tmp_dir_name
     @dataset_file_path = dataset_file_path
     @css_path = css_path
     @options = options
@@ -134,11 +133,6 @@ class SVGBuilder
   end
 
   # Filename methods
-
-  # Temporary directory path
-  def tmp_dir
-    "#{@data_dir}/#{@tmp_dir_name}"
-  end
 
   # SVG file path
   def svg_path
