@@ -184,8 +184,8 @@ class DatasetBuilder
 
   def change_projection(bb_info)
     LOGGER.info 'Changing map projection...'
-    cmd = "mapshaper -i #{combined_file_path} -proj +proj=tmerc +k_0=0.9996 " \
-          "+lon_0=#{bb_info[:center_lon]} +lat_0=#{bb_info[:center_lat]} target=* -o '#{final_file_path}'"
+    cmd = "mapshaper -i #{combined_file_path} -proj +proj=eqc " \
+          "+lon_0=#{bb_info[:center_lon]} +lat_ts=#{bb_info[:center_lat]} target=* -o '#{final_file_path}'"
     `#{cmd}`
   end
 
