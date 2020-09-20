@@ -28,6 +28,7 @@ class Parser
 
   def initialize
     @options = {
+      extract_comuni: false,
       n_padding: 0.05,
       s_padding: 0.05,
       w_padding: 0.05,
@@ -58,8 +59,13 @@ class Parser
         @options[:states] = states
       end
 
-      opts.on('-c', '--comune COMUNE', 'Highlights the territory of a comune given its name (in Italian).') do |com|
-        @options[:comune] = com
+      opts.on('-c', '--comune COMUNE',
+              'Highlights the territory of a comune given its name (in Italian). Ignored if -C option is used.') do |c|
+        @options[:comune] = c
+      end
+
+      opts.on('-C', '--extract-comuni', 'Extract the maps of the comuni in the province to a separate directory.') do
+        @options[:extract_comuni] = true
       end
 
       opts.on('-b', '--bb-padding PADDING', Float,
@@ -132,6 +138,7 @@ class Parser
       raise OptionParser::MissingArgument if args.length.zero?
 
       parser.parse!(args)
+      @options[:comune] = nil if @options[:extract_comuni]
     rescue OptionParser::MissingArgument
       abort parser.help
     end

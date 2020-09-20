@@ -41,8 +41,14 @@ class SVGBuilder
     clean_svg svg_doc
     add_info_to_svg svg_doc, metadata
     write_svg svg_doc
+
+    if @options[:extract_comuni]
+      Dir.mkdir province_dir_path unless File.exist? province_dir_path
+      extract_comuni svg_doc, metadata
+    end
+
     File.delete @dataset_file_path unless @options[:no_clean]
-    svg_path
+    { svg_path: svg_path, dir_path: province_dir_path }
   end
 
   private
@@ -85,9 +91,7 @@ class SVGBuilder
                       when 6
                         CSSConstants::CLASS_PROVINCE
                       when 8
-                        # Italian name takes precedence for multi-lingual names
-                        name_comune = md['name:it'] || md['name']
-                        if @options[:comune] == name_comune
+                        if @options[:comune] == comune_name(md)
                           "#{CSSConstants::CLASS_COMUNE} #{CSSConstants::CLASS_INTEREST}"
                         else
                           CSSConstants::CLASS_COMUNE
@@ -115,6 +119,20 @@ class SVGBuilder
     File.write svg_path, doc.to_xml
   end
 
+  def write_comune(name, doc)
+    File.write "#{province_dir_path}/#{name}.svg", doc.to_xml
+  end
+
+  def extract_comuni(doc, metadata)
+    metadata.select { |_, m| m['admin_level'].to_i == 8 }.each do |k, m|
+      doc_copy = doc.dup
+      paths = doc_copy.css 'path'
+      path = paths.select { |p| p['id'] == k }.first
+      path['class'] = "#{CSSConstants::CLASS_COMUNE} #{CSSConstants::CLASS_INTEREST}"
+      write_comune comune_name(m), doc_copy
+    end
+  end
+
   # Filename methods
 
   # Temporary directory path
@@ -126,5 +144,16 @@ class SVGBuilder
   def svg_path
     name = @options[:comune] || '\1'
     @dataset_file_path.gsub(/(.+)\.geojson$/, "#{name}.svg")
+  end
+
+  # Province directory, used to save comuni maps
+  def province_dir_path
+    @dataset_file_path.gsub(/(.+)\.geojson$/, '\1')
+  end
+
+  # Comune name, used as filename for comuni maps
+  def comune_name(comune_metadata)
+    # Italian name takes precedence for multi-language names
+    comune_metadata['name:it'] || comune_metadata['name']
   end
 end
