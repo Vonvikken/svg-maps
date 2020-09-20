@@ -17,49 +17,51 @@
 
 # frozen_string_literal: true
 
-# Generic administrative subdivision
-class AdminSubdivision
-  attr_reader :abbr, :name
+module SVGMapsItaly
+  # Generic administrative subdivision
+  class AdminSubdivision
+    attr_reader :abbr, :name
 
-  protected
+    protected
 
-  def initialize(name, abbr, filename = nil)
-    @name = name
-    @abbr = abbr
-    @filename = filename
+    def initialize(name, abbr, filename = nil)
+      @name = name
+      @abbr = abbr
+      @filename = filename
+    end
+
+    public
+
+    def filename
+      @filename ||= @name.downcase
+    end
+
+    def to_s
+      "#{@abbr}:\t#{@name}"
+    end
   end
 
-  public
+  # Set of administrative subdivisions
+  class AdminSubdivisionSet
+    protected
 
-  def filename
-    @filename ||= @name.downcase
-  end
+    def initialize
+      @set = {}
+    end
 
-  def to_s
-    "#{@abbr}:\t#{@name}"
-  end
-end
+    def <<(admin_subdivision)
+      @set[admin_subdivision.abbr] = admin_subdivision
+    end
 
-# Set of administrative subdivisions
-class AdminSubdivisionSet
-  protected
+    public
 
-  def initialize
-    @set = {}
-  end
+    def find(abbreviation)
+      @set[abbreviation]
+    end
 
-  def <<(admin_subdivision)
-    @set[admin_subdivision.abbr] = admin_subdivision
-  end
-
-  public
-
-  def find(abbreviation)
-    @set[abbreviation]
-  end
-
-  def to_s
-    lst = @set.map { |_, val| val.to_s }
-    lst.join "\n"
+    def to_s
+      lst = @set.map { |_, val| val.to_s }
+      lst.join "\n"
+    end
   end
 end

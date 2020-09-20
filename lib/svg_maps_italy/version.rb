@@ -1,4 +1,4 @@
-# Class:     /home/vonvikken/svg-maps/lib/css_constants.rb
+# Class:     /home/vonvikken/svg-maps/lib/version.rb
 # Author:    Vincenzo Stornanti <von.vikken@gmail.com>
 #
 # Copyright 2020 Vincenzo Stornanti
@@ -17,20 +17,6 @@
 
 # frozen_string_literal: true
 
-# Constants used in CSS stylesheets
-module CSSConstants
-  # Foreign nations
-  CLASS_FOREIGN = 'foreign'
-
-  # Other regions
-  CLASS_REGION = 'region'
-
-  # Other provinces
-  CLASS_PROVINCE = 'province'
-
-  # Comuni
-  CLASS_COMUNE = 'comune'
-
-  # Highlighted comune
-  CLASS_INTEREST = 'interest'
+module SVGMapsItaly
+  VERSION = '0.0.1'
 end

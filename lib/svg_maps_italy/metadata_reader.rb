@@ -1,4 +1,4 @@
-# Class:     /home/vonvikken/svg-maps/lib/logger_facility.rb
+# Class:     /home/vonvikken/svg-maps/lib/metadata_reader.rb
 # Author:    Vincenzo Stornanti <von.vikken@gmail.com>
 #
 # Copyright 2020 Vincenzo Stornanti
@@ -17,13 +17,21 @@
 
 # frozen_string_literal: true
 
-require 'logger'
+require 'json'
 
-# Common logger utilities
-module LoggerUtility
-  LOGGER = Logger.new STDOUT
+module SVGMapsItaly
+  # Extract metadata from GeoJSON
+  class MetadataReader
+    attr_reader :metadata
 
-  LOGGER.formatter = proc do |severity, datetime, _, msg|
-    "#{severity.ljust 5} -- #{datetime.strftime('%Y-%m-%d %H:%M:%S')}: #{msg}\n"
+    def initialize(path)
+      file_in = File.read path
+      full_json = JSON.parse file_in
+
+      feats = full_json['features']
+      a_p = []
+      feats.map { |feat| feat['properties'] }.each { |p| a_p << [p['@id'], p] }
+      @metadata = a_p.to_h
+    end
   end
 end

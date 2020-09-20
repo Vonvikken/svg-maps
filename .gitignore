@@ -3,3 +3,12 @@
 data/
 Tutorial.md
 /*.rb
+/*.gem
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/

@@ -1,4 +1,6 @@
-# Class:     /home/vonvikken/svg-maps/lib/metadata_reader.rb
+# frozen_string_literal: true
+
+# Class:     /home/vonvikken/svg-maps/Gemfile
 # Author:    Vincenzo Stornanti <von.vikken@gmail.com>
 #
 # Copyright 2020 Vincenzo Stornanti
@@ -15,21 +17,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# frozen_string_literal: true
+source 'https://rubygems.org'
 
-require 'json'
+# Specify your gem's dependencies in svg_maps_italy.gemspec
+gemspec
 
-# Extract metadata from GeoJSON
-class MetadataReader
-  attr_reader :metadata
-
-  def initialize(path)
-    file_in = File.read path
-    full_json = JSON.parse file_in
-
-    feats = full_json['features']
-    a_p = []
-    feats.map { |feat| feat['properties'] }.each { |p| a_p << [p['@id'], p] }
-    @metadata = a_p.to_h
-  end
-end
+gem 'nokogiri'
+gem 'rake', '~> 12.0'
