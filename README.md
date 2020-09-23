@@ -10,9 +10,27 @@ Ruby scripts used to create SVG maps of Italian _comuni_ and provinces from OSM 
 
 ## Installation
 
-Execute:
+To manually build the gem, run the following script:
 
-    $ gem install svg_maps_italy
+    $ ./build_gem.sh
+
+To install it in your system, execute:
+
+    $ gem install svg_maps_italy-<version>.gem
+
+## Description
+I made these scripts to create SVG maps of Italian administrative subdivisions (namely regions, provinces and _comuni_),
+intending to publish them on Wikipedia, like I did
+[several years ago](https://commons.wikimedia.org/wiki/File:Map_of_comune_of_Rimini_(province_of_Rimini,_region_Emilia-Romagna,_Italy).svg).
+
+This time I chose a more visually pleasant appearance, with the option to furtherly customize them via CSS stylesheet,
+showing the neighboring provinces, regions and even the nearby nations. Moreover, when hovering above a feature on the
+map, its name will be shown in a tooltip and its boundaries will be highlighted (though this feature can be turned off
+via CSS).
+
+This is how a map of a _comune_ will look like with the default style:
+
+<img src="img/Rimini.svg" width="800" alt="Comune of Rimini, province of Rimini, Emilia-Romagna, Italy"/>
 
 ## Usage
 _TO DO_
