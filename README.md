@@ -28,9 +28,17 @@ showing the neighboring provinces, regions and even the nearby nations. Moreover
 map, its name will be shown in a tooltip and its boundaries will be highlighted (though this feature can be turned off
 via CSS).
 
-This is how a map of a _comune_ will look like with the default style:
+This is how a map of a _comune_ will look like with the default style (in this case Rimini, province of Rimini, region
+Emilia-Romagna):
 
 <img src="img/Rimini.svg" width="800" alt="Comune of Rimini, province of Rimini, Emilia-Romagna, Italy"/>
+
+The _comune_ of interest (Rimini) is shown in red, whereas the other _comuni_ of the province are in yellow. A lighter
+shade of yellow is for the other provinces of its own region, whereas the neighboring regions are in orange. Finally,
+the independent nation of San Marino is colored in gray.
+
+_Note_: if you don't see the tooltips and the highlighted boundaries, try to right click on the image and select _Show
+image_.
 
 ## Usage
 _TO DO_
