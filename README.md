@@ -6,7 +6,7 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Vonvikken/svg-maps)
 ![GitHub](https://img.shields.io/github/license/Vonvikken/svg-maps)
 
-Ruby scripts used to create SVG maps of Italian _comuni_ and provinces from OSM data.
+Ruby script used to create SVG maps of Italian _comuni_ and provinces from OSM data.
 
 ## Installation
 
@@ -19,7 +19,7 @@ To install it in your system, execute:
     $ gem install svg_maps_italy-<version>.gem
 
 ## Description
-I made these scripts to create SVG maps of Italian administrative subdivisions (namely regions, provinces and _comuni_),
+I made this script to create SVG maps of Italian administrative subdivisions (namely regions, provinces and _comuni_),
 intending to publish them on Wikipedia, like I did
 [several years ago](https://commons.wikimedia.org/wiki/File:Map_of_comune_of_Rimini_(province_of_Rimini,_region_Emilia-Romagna,_Italy).svg).
 
@@ -40,21 +40,18 @@ independent nation of San Marino is colored in gray.
 _Note_: if you don't see the tooltips and the highlighted boundaries, try to right click on the image and select _Show
 image_.
 
-## Usage
+## Prerequisites
+This script uses [Mapshaper](mbloch/mapshaper) to perform all the magics on the map data. If it isn't installed
+nothing will work. And, of course, you need Ruby too! I used version 2.7, but it should work at least with 2.3.
 
-### Prerequisites
-
-These scripts use [Mapshaper](mbloch/mapshaper) to perform all the magics on the map data. If it isn't installed
-nothing will work...
-
-#### Source datasets
+### Source datasets
 All the map data are from OpenStreetMaps ([copyright notice](https://www.openstreetmap.org/copyright)). The source
 datasets consist in a file for each of the 20 Italian regions and one for each of the countries that share a border
 with Italy (France, Switzerland, Austria, Slovenia, San Marino and Vatican City). You have to download them on your
 local drive and perform some operations (maybe one day I will implement a way to automate it...). The default 
 dataset location is in the subdirectory `data` of the working directory, but can be changed via command line option.
 
-##### Italian regions
+#### Italian regions
 Create the subdirectory `regions` in the dataset directory, then go to http://overpass-turbo.eu/ and enter the
 following query:
 
@@ -82,7 +79,7 @@ of the region in lowercase (e.g. `friuli-venezia giulia.geojson` for Friuli-Vene
 exception is Valle d'Aosta (due to the apostrophe), whose file name should be `valle aosta.geojson`.
 If you prefer you can always change the names by editing the file [region.rb](lib/svg_maps_italy/region.rb).
 
-##### Foreign states
+#### Foreign states
 Using the previous method for the foreign states is difficult because the data would show the maritime
 boundaries instead of the coastline. A simpler approach is shown below.
 
@@ -116,7 +113,40 @@ mapshaper -i file.geojson -each 'admin_level=admin_level.toString();id=id.toStri
 
 Finally, rename the file `out.geojson` into the nation name in lowercase (e.g. `san marino.geojson`
 for San Marino) and move it to the subdirectory `states`. You can change the file names by editing
-the file [state.rb](lib/svg_maps_italy/state.rb). 
+the file [state.rb](lib/svg_maps_italy/state.rb).
+
+## Usage
+This script runs from command line, with the executable `create_maps`. The generated maps are put
+in the subdirectory `out` of the data directory.
+
+The simplest usage is the following, using the only mandatory option `-p`, followed by the province
+code:
+```bash
+create_map -p PA
+```
+It creates a map of the given province (in this case Palermo) without highlighting any _comune_.
+
+If the province shares borders with other states and/or Italian regions, add these with the options
+`-r` and `-f`. For example, the province of Bolzano borders with the regions of Lombardia and
+Veneto, plus with the countries of Austria and Switzerland, so the command will look like this:
+```bash
+create_map -p BZ -r LOM,VEN -f AT,CH
+```
+To show the list of the codes of provinces, regions and countries, use respectively the options
+`-P`, `-R` or `-F`.
+
+For specifying a _comune_ in particular, use the `-c` option, followed by the name of the _comune_
+(in case of multi-language names, use the Italian one):
+```bash
+create_map -p CA -c "Quartu Sant'Elena"
+```
+This will create a map with the territory of the given _comune_ highlighted. Use the quotes around
+the name only if it contains spaces or apostrophes.
+
+Finally, the option `-C` will generate the map of each _comune_ of the province into a subdirectory
+of the `out` directory.
+
+_To do: other options._
 
 ## Contributing
 
