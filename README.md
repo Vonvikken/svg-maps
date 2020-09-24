@@ -8,16 +8,6 @@
 
 Ruby script used to create SVG maps of Italian _comuni_ and provinces from OSM data.
 
-## Installation
-
-To manually build the gem, run the following script:
-
-    $ ./build_gem.sh
-
-To install it in your system, execute:
-
-    $ gem install svg_maps_italy-<version>.gem
-
 ## Description
 I made this script to create SVG maps of Italian administrative subdivisions (namely regions, provinces and _comuni_),
 intending to publish them on Wikipedia, like I did
@@ -114,6 +104,16 @@ mapshaper -i file.geojson -each 'admin_level=admin_level.toString();id=id.toStri
 Finally, rename the file `out.geojson` into the nation name in lowercase (e.g. `san marino.geojson`
 for San Marino) and move it to the subdirectory `states`. You can change the file names by editing
 the file [state.rb](lib/svg_maps_italy/state.rb).
+
+## Installation
+
+To manually build the gem, run the following script:
+
+    $ ./build_gem.sh
+
+To install it in your system, execute:
+
+    $ gem install svg_maps_italy-<version>.gem
 
 ## Usage
 This script runs from command line, with the executable `create_maps`. The generated maps are put
