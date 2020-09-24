@@ -6,7 +6,7 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Vonvikken/svg-maps)
 ![GitHub](https://img.shields.io/github/license/Vonvikken/svg-maps)
 
-Ruby script used to create SVG maps of Italian _comuni_ and provinces from OSM data.
+Ruby gem used to create SVG maps of Italian _comuni_ and provinces from OSM data.
 
 ## Description
 I made this script to create SVG maps of Italian administrative subdivisions (namely regions, provinces and _comuni_),
@@ -29,8 +29,6 @@ independent nation of San Marino is colored in gray.
 
 _Note_: if you don't see the tooltips and the highlighted boundaries, try to right click on the image and select _Show
 image_.
-
-All the map data are from OpenStreetMaps ([copyright notice](https://www.openstreetmap.org/copyright)).
 
 ## Prerequisites
 This script uses [Mapshaper](https://github.com/mbloch/mapshaper) to perform all the magics on the map data. If it isn't installed
@@ -60,27 +58,7 @@ create_map -p PA
 ```
 It creates a map of the given province (in this case Palermo) without highlighting any _comune_.
 
-If the province shares borders with other states and/or Italian regions, add these with the options
-`-r` and `-f`. For example, the province of Bolzano borders with the regions of Lombardia and
-Veneto, plus with the countries of Austria and Switzerland, so the command will look like this:
-```bash
-create_map -p BZ -r LOM,VEN -f AT,CH
-```
-To show the list of the codes of provinces, regions and countries, use respectively the options
-`-P`, `-R` or `-F`.
-
-For specifying a _comune_ in particular, use the `-c` option, followed by the name of the _comune_
-(in case of multi-language names, use the Italian one):
-```bash
-create_map -p CA -c "Quartu Sant'Elena"
-```
-This will create a map with the territory of the given _comune_ highlighted. Use the quotes around
-the name only if it contains spaces or apostrophes.
-
-Finally, the option `-C` will generate the map of each _comune_ of the province into a subdirectory
-of the `out` directory.
-
-_To do: other options._
+For more complex usage, please refer to the related [wiki page](https://github.com/Vonvikken/svg-maps/wiki/Usage).
 
 ## Contributing
 
@@ -93,3 +71,9 @@ intended to be a safe, welcoming space for collaboration, and contributors are e
 
 Everyone interacting in the SvgMapsItaly project's codebases, issue trackers, chat rooms and mailing lists is expected
 to follow the [code of conduct](https://github.com/vonvikken/svg-maps/blob/master/CODE_OF_CONDUCT.md).
+
+## License
+
+This project is distributed under _Apache 2.0_ license.
+
+All the map data are from OpenStreetMaps ([copyright notice](https://www.openstreetmap.org/copyright)).
