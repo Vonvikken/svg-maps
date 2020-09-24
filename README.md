@@ -23,7 +23,7 @@ I made this script to create SVG maps of Italian administrative subdivisions (na
 intending to publish them on Wikipedia, like I did
 [several years ago](https://commons.wikimedia.org/wiki/File:Map_of_comune_of_Rimini_(province_of_Rimini,_region_Emilia-Romagna,_Italy).svg).
 
-This time I chose a more complete and visually pleasant appearance (with the option to furtherly customize them via CSS
+This time I chose a more complete and visually pleasant appearance (with the option to further customize them via CSS
 stylesheet), showing the nearby provinces, regions and nations. Moreover, when hovering above a subdivision on the map,
 its name will be shown in a tooltip and its boundaries will be highlighted (though this feature can be turned off
 modifying the CSS).
