@@ -30,80 +30,14 @@ independent nation of San Marino is colored in gray.
 _Note_: if you don't see the tooltips and the highlighted boundaries, try to right click on the image and select _Show
 image_.
 
+All the map data are from OpenStreetMaps ([copyright notice](https://www.openstreetmap.org/copyright)).
+
 ## Prerequisites
 This script uses [Mapshaper](https://github.com/mbloch/mapshaper) to perform all the magics on the map data. If it isn't installed
 nothing will work. And, of course, you need Ruby too! I used version 2.7, but it should work at least with 2.3.
 
-### Source datasets
-All the map data are from OpenStreetMaps ([copyright notice](https://www.openstreetmap.org/copyright)). The source
-datasets consist in a file for each of the 20 Italian regions and one for each of the countries that share a border
-with Italy (France, Switzerland, Austria, Slovenia, San Marino and Vatican City). You have to download them on your
-local drive and perform some operations (maybe one day I will implement a way to automate it...). The default 
-dataset location is in the subdirectory `data` of the working directory, but can be changed via command line option.
-
-#### Italian regions
-Create the subdirectory `regions` in the dataset directory, then go to http://overpass-turbo.eu/ and enter the
-following query:
-
-```
-[out:json][timeout:25];
-area["ISO3166-2"="IT-xx"]->.searchArea;
-(
-  node["boundary"="administrative"]["admin_level"="4"](area.searchArea);
-  node["boundary"="administrative"]["admin_level"="6"](area.searchArea);
-  node["boundary"="administrative"]["admin_level"="8"](area.searchArea);
-  relation["boundary"="administrative"]["admin_level"="4"](area.searchArea);
-  relation["boundary"="administrative"]["admin_level"="6"](area.searchArea);
-  relation["boundary"="administrative"]["admin_level"="8"](area.searchArea);
-);
-out body;
->;
-out skel qt;
-```
-
-replacing the string `IT-xx` with the ISO 3166-2:IT code for the corresponding region (you can find it 
-[here](https://it.wikipedia.org/wiki/ISO_3166-2:IT#Regioni)). Execute it and download the result as GeoJson.
-
-Save the file into the `regions` directory with the extension `.geojson`, whereas the name is the one
-of the region in lowercase (e.g. `friuli-venezia giulia.geojson` for Friuli-Venezia Giulia). The only
-exception is Valle d'Aosta (due to the apostrophe), whose file name should be `valle aosta.geojson`.
-If you prefer you can always change the names by editing the file [region.rb](lib/svg_maps_italy/region.rb).
-
-#### Foreign states
-Using the previous method for the foreign states is difficult because the data would show the maritime
-boundaries instead of the coastline. A simpler approach is shown below.
-
-First, create the subdirectory `states` in the dataset directory, then go to 
-[this site](https://osm-boundaries.com/Map) (you must authenticate with an OpenStreetMap account).
-For each of the following nations:
-- France
-- Switzerland
-- Austria
-- Slovenia
-- San Marino
-- Vatican City
-
-select the corresponding item in the list (for France, use the sub-item _Metropolitan France_) and 
-click _Download_.
-
-In the dialog that opens, set the options as below:
-- Based on _Selection_
-- Admin level min: _2_, max: _2_ (both _3_ for France).
-- _Land only_
-- All tags _Exclude_
-- Simplify _No_
-
-then click _Download_.
-
-Extract the GeoJSON file from the archive, then run the following command, in order to make the 
-dataset coherent with the previous ones:
-```bash
-mapshaper -i file.geojson -each 'admin_level=admin_level.toString();id=id.toString()' -rename-fields @id=id -o out.geojson
-```
-
-Finally, rename the file `out.geojson` into the nation name in lowercase (e.g. `san marino.geojson`
-for San Marino) and move it to the subdirectory `states`. You can change the file names by editing
-the file [state.rb](lib/svg_maps_italy/state.rb).
+Before the first use you need to download the source datasets. Please follow the instructions in the corresponding
+[wiki page](https://github.com/Vonvikken/svg-maps/wiki/Source-datasets).
 
 ## Installation
 
