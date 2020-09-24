@@ -28,6 +28,11 @@ module SVGMapsItaly
     include CSSConstants
     include LoggerUtility
 
+    COPYRIGHT_NOTICE = <<~COPY
+      <!-- Data extracted from OpenStreetMap - https://www.openstreetmap.org/copyright -->
+      <!-- Map created with SvgMapsItaly - https://github.com/Vonvikken/svg-maps -->
+    COPY
+
     def initialize(data_dir, dataset_file_path, css_path, options)
       @data_dir = data_dir
       @dataset_file_path = dataset_file_path
@@ -74,6 +79,7 @@ module SVGMapsItaly
     def add_info_to_svg(doc, metadata)
       LOGGER.info 'Adding info and style to SVG...'
 
+      insert_copyright doc
       insert_css doc
 
       paths = doc.css 'path'
@@ -100,6 +106,10 @@ module SVGMapsItaly
                           ''
                         end
       end
+    end
+
+    def insert_copyright(doc)
+      doc.root.first_element_child.add_previous_sibling COPYRIGHT_NOTICE
     end
 
     def insert_css(doc)
