@@ -41,7 +41,7 @@ _Note_: if you don't see the tooltips and the highlighted boundaries, try to rig
 image_.
 
 ## Prerequisites
-This script uses [Mapshaper](mbloch/mapshaper) to perform all the magics on the map data. If it isn't installed
+This script uses [Mapshaper](https://github.com/mbloch/mapshaper) to perform all the magics on the map data. If it isn't installed
 nothing will work. And, of course, you need Ruby too! I used version 2.7, but it should work at least with 2.3.
 
 ### Source datasets
