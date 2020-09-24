@@ -29,6 +29,9 @@ module SVGMapsItaly
   class DatasetBuilder
     include LoggerUtility
 
+    REGIONS_DIR = 'regions'
+    STATES_DIR = 'states'
+
     def initialize(options, data_dir, tmp_dir)
       @province = Province.instance.find(options[:province])
 
@@ -199,17 +202,17 @@ module SVGMapsItaly
 
     # File path of the region the selected province belongs to
     def own_reg_file_path
-      "#{@data_dir}/regioni/#{@province.reg.filename}.geojson"
+      "#{@data_dir}/#{REGIONS_DIR}/#{@province.reg.filename}.geojson"
     end
 
     # File path of the given region
     def reg_file_path(region)
-      "#{@data_dir}/regioni/#{region.filename}.geojson"
+      "#{@data_dir}/#{REGIONS_DIR}/#{region.filename}.geojson"
     end
 
     # File path of the given state
     def state_file_path(state)
-      "#{@data_dir}/stati/#{state.filename}.geojson"
+      "#{@data_dir}/#{STATES_DIR}/#{state.filename}.geojson"
     end
 
     # File path of the intermediate dataset with the boundaries of the given region
