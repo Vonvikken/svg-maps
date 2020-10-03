@@ -64,7 +64,9 @@ module SVGMapsItaly
 
     def convert_to_svg(width)
       LOGGER.info 'Converting GeoJSON to SVG...'
-      `mapshaper -i "#{@dataset_file_path}" -o format=svg id-field=@id width=#{width} "#{svg_path}"`
+      cmd = %(mapshaper -i "#{@dataset_file_path}" -simplify #{@options[:simplify]} ) +
+            %(-o format=svg id-field=@id width=#{width} "#{svg_path}")
+      `#{cmd}`
       File.open(svg_path) { |f| Nokogiri::XML(f) }
     end
 

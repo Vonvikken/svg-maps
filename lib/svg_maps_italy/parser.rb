@@ -31,6 +31,7 @@ module SVGMapsItaly
       @options = {
         data_dir: 'data',
         extract_comuni: false,
+        simplify: 1.0,
         n_padding: 0.05,
         s_padding: 0.05,
         w_padding: 0.05,
@@ -71,6 +72,12 @@ module SVGMapsItaly
 
         opts.on('-C', '--extract-comuni', 'Extract the maps of the comuni in the province to a separate directory.') do
           @options[:extract_comuni] = true
+        end
+
+        opts.on('-S', '--simplify RATIO', Float,
+                'Simplify the map polygons to reduce the final file size. Parameter RATIO is a number ranging from '\
+                '1.0 (no simplification) to 0.0 (max simplification). Default: 1.0.') do |simpl|
+          @options[:simplify] = simpl
         end
 
         opts.on('-b', '--bb-padding PADDING', Float,
