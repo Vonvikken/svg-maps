@@ -27,18 +27,25 @@ module SVGMapsItaly
   class Parser
     attr_reader :options
 
+    DEF_DATA_DIR = 'data'
+    DEF_SIMPLIFY = 1.0
+    DEF_PADDING = 0.05
+    DEF_SVG_WIDTH = 1600
+    DEF_ADD_METADATA = false
+    DEF_NO_CLEAN = false
+
     def initialize
       @options = {
-        data_dir: 'data',
+        data_dir: DEF_DATA_DIR,
         extract_comuni: false,
-        simplify: 1.0,
-        n_padding: 0.05,
-        s_padding: 0.05,
-        w_padding: 0.05,
-        e_padding: 0.05,
-        svg_width: 1600,
-        add_metadata: false,
-        no_clean: false
+        simplify: DEF_SIMPLIFY,
+        n_padding: DEF_PADDING,
+        s_padding: DEF_PADDING,
+        w_padding: DEF_PADDING,
+        e_padding: DEF_PADDING,
+        svg_width: DEF_SVG_WIDTH,
+        add_metadata: DEF_ADD_METADATA,
+        no_clean: DEF_NO_CLEAN
       }
     end
 
@@ -48,7 +55,7 @@ module SVGMapsItaly
         opts.separator ''
         opts.separator 'Options:'
 
-        opts.on('-d', '--data-dir DATA_DIR', 'Path of the data directory (default: "data")') do |data_dir|
+        opts.on('-d', '--data-dir DATA_DIR', %(Path of the data directory (default: "#{DEF_DATA_DIR}"))) do |data_dir|
           @options[:data_dir] = data_dir
         end
 
@@ -76,12 +83,12 @@ module SVGMapsItaly
 
         opts.on('-S', '--simplify RATIO', Float,
                 'Simplify the map polygons to reduce the final file size. Parameter RATIO is a number ranging from '\
-                '1.0 (no simplification) to 0.0 (max simplification). Default: 1.0.') do |simpl|
+                "1.0 (no simplification) to 0.0 (max simplification). Default: #{DEF_SIMPLIFY}.") do |simpl|
           @options[:simplify] = simpl
         end
 
         opts.on('-b', '--bb-padding PADDING', Float,
-                'Padding of the map bounding box in degrees (default: 0.05). ' \
+                "Padding of the map bounding box in degrees (default: #{DEF_PADDING}). " \
                 'Use this to set the padding for all directions.') do |bb_pad|
           @options[:n_padding] = bb_pad
           @options[:s_padding] = bb_pad
@@ -90,22 +97,22 @@ module SVGMapsItaly
         end
 
         opts.on('-n', '--north-padding PADDING', Float,
-                'North padding of the map bounding box in degrees (default: 0.05)') do |n_pad|
+                "North padding of the map bounding box in degrees (default: #{DEF_PADDING})") do |n_pad|
           @options[:n_padding] = n_pad
         end
 
         opts.on('-s', '--south-padding PADDING', Float,
-                'South padding of the map bounding box in degrees (default: 0.05)') do |s_pad|
+                "South padding of the map bounding box in degrees (default: #{DEF_PADDING})") do |s_pad|
           @options[:s_padding] = s_pad
         end
 
         opts.on('-w', '--west-padding PADDING', Float,
-                'West padding of the map bounding box in degrees (default: 0.05)') do |w_pad|
+                "West padding of the map bounding box in degrees (default: #{DEF_PADDING})") do |w_pad|
           @options[:w_padding] = w_pad
         end
 
         opts.on('-e', '--east-padding PADDING', Float,
-                'East padding of the map bounding box in degrees (default: 0.05)') do |e_pad|
+                "East padding of the map bounding box in degrees (default: #{DEF_PADDING})") do |e_pad|
           @options[:e_padding] = e_pad
         end
 
@@ -124,11 +131,11 @@ module SVGMapsItaly
           exit 0
         end
 
-        opts.on('--svg-width WIDTH', Integer, 'Width of the SVG map in pixels (default: 1600)') do |width|
+        opts.on('--svg-width WIDTH', Integer, "Width of the SVG map in pixels (default: #{DEF_SVG_WIDTH})") do |width|
           @options[:svg_width] = width
         end
 
-        opts.on('--add-osm-metadata', 'Add OSM metadata to SVG elements (default: false)') do
+        opts.on('--add-osm-metadata', "Add OSM metadata to SVG elements (default: #{DEF_ADD_METADATA})") do
           @options[:add_metadata] = true
         end
 
@@ -136,7 +143,7 @@ module SVGMapsItaly
           @options[:css_path] = path
         end
 
-        opts.on('--no-clean-tmp', 'Don\'t clean temporary directory after completion (default: false)') do
+        opts.on('--no-clean-tmp', "Don't clean temporary directory after completion (default: #{DEF_NO_CLEAN})") do
           @options[:no_clean] = true
         end
 
