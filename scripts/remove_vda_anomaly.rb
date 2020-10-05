@@ -1,4 +1,5 @@
-# Class:     /home/vonvikken/svg-maps/lib/metadata_reader.rb
+#!/usr/bin/env ruby
+# Class:     /home/vonvikken/svg-maps/scripts/remove_vda_anomaly.rb
 # Author:    Vincenzo Stornanti <von.vikken@gmail.com>
 #
 # Copyright 2020 Vincenzo Stornanti
@@ -19,19 +20,14 @@
 
 require 'json'
 
-module SVGMapsItaly
-  # Extract metadata from GeoJSON
-  class MetadataReader
-    attr_reader :metadata
+path = ARGV[0]
+file_in = File.read path
+full_json = JSON.parse file_in
 
-    def initialize(path)
-      file_in = File.read path
-      full_json = JSON.parse file_in
+feats = full_json['features']
 
-      feats = full_json['features']
-      a_p = []
-      feats.map { |feat| feat['properties'] }.each { |p| a_p << [p['id'], p] }
-      @metadata = a_p.to_h
-    end
-  end
+feats.reject! { |feat| /^FR-.+/ =~ feat['properties']['ISO3166-2'] }
+
+File.open(path, 'w') do |f|
+  f.puts full_json.to_json
 end
