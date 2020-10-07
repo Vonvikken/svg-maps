@@ -28,12 +28,12 @@ module SVGMapsItaly
     def initialize
       super
 
-      self << AdminSubdivision.new('Slovenija', 'SL', 'slovenia')
-      self << AdminSubdivision.new('Österreich', 'AT', 'austria')
-      self << AdminSubdivision.new('Svizzera', 'CH', 'switzerland')
-      self << AdminSubdivision.new('France', 'FR', 'france')
-      self << AdminSubdivision.new('San Marino', 'SM', 'san marino')
-      self << AdminSubdivision.new('Città del Vaticano', 'CV', 'vatican city')
+      self << AdminSubdivision.new('Slovenija', 'SL')
+      self << AdminSubdivision.new('Österreich', 'AT')
+      self << AdminSubdivision.new('Svizzera', 'CH')
+      self << AdminSubdivision.new('France', 'FR')
+      self << AdminSubdivision.new('San Marino', 'SM')
+      self << AdminSubdivision.new('Città del Vaticano', 'CV')
     end
   end
 end

@@ -49,15 +49,18 @@ mkdir -p ../data/tmp
 
 cd ../data/regions || exit
 
-regions=("piemonte" "valle aosta" "lombardia" "trentino-alto adige" "veneto" "friuli-venezia giulia" "liguria"
-  "emilia-romagna" "toscana" "umbria" "marche" "lazio" "abruzzo" "molise" "campania" "puglia" "basilicata"
-  "calabria" "sicilia" "sardegna")
+regions=("Piemonte" "Valle d'Aosta" "Lombardia" "Trentino-Alto Adige" "Veneto" "Friuli-Venezia Giulia" "Liguria"
+  "Emilia-Romagna" "Toscana" "Umbria" "Marche" "Lazio" "Abruzzo" "Molise" "Campania" "Puglia" "Basilicata"
+  "Calabria" "Sicilia" "Sardegna")
+
+abbrs=("pie" "vda" "lom" "taa" "ven" "fvg" "lig" "emr" "tos" "umb" "mar" "laz" "abr" "mol" "cam" "pug" "bas" "cal" "sic" "sar")
 
 # ISO 3166-2:IT code of each region
 codes=(21 23 25 32 34 36 42 45 52 55 57 62 65 67 72 75 77 78 82 88)
 
 for i in "${!regions[@]}"; do
   r=${regions[$i]}
+  a=${abbrs[$i]}
   c=${codes[$i]}
   cmd=$(
     cat <<EOT
@@ -77,10 +80,13 @@ out skel qt;
 EOT
   )
 
-  echo
-  echo -e "Downloading ${CYAN}${r}.json${NORM}... "
+  json_name="../tmp/${a}.json"
+  geojson_name="${a}.geojson"
 
-  curl -X POST -H "Content-Type: text/json" -d "${cmd}" "http://overpass-api.de/api/interpreter" -o "../tmp/${r}".json
+  echo
+  echo -e "Downloading ${CYAN}${r}${NORM}... "
+
+  curl -X POST -H "Content-Type: text/json" -d "${cmd}" "http://overpass-api.de/api/interpreter" -o "${json_name}"
   # shellcheck disable=SC2181
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}Done!${NORM}"
@@ -92,16 +98,16 @@ EOT
   fi
 
   echo -n "Converting to GeoJSON... "
-  osmtogeojson "../tmp/${r}".json >"${r}".geojson
+  osmtogeojson "${json_name}" >"${a}".geojson
   # shellcheck disable=SC2181
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}OK!${NORM}"
-    echo -e "${CYAN}$(pwd)/${r}.geojson${NORM} created!"
-    rm "../tmp/${r}".json
+    echo -e "${CYAN}$(pwd)/${geojson_name}${NORM} created!"
+    rm "${json_name}"
     echo
   else
     echo -e "${RED}Error!${NORM}"
-    echo -e "Could not convert to ${CYAN}${r}.geojson${NORM}!"
+    echo -e "Could not convert to ${CYAN}${geojson_name}${NORM}!"
     exit
   fi
 
@@ -113,7 +119,7 @@ EOT
 done
 
 # Removing anomaly due to border dispute...
-/usr/bin/env ruby ../../scripts/remove_vda_anomaly.rb "valle aosta.geojson"
+/usr/bin/env ruby ../../scripts/remove_vda_anomaly.rb "vda.geojson"
 
 echo -e "${GREEN}Download complete!${NORM} For a better appearance of some regions, you can now run ${YELLOW}cut_lagoons.sh${NORM}!"
 

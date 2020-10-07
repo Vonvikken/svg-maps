@@ -33,7 +33,7 @@ module SVGMapsItaly
     public
 
     def filename
-      @filename ||= @name.downcase
+      @filename ||= @abbr.downcase
     end
 
     def to_s
