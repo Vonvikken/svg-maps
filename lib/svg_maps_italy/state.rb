@@ -33,7 +33,7 @@ module SVGMapsItaly
       self << AdminSubdivision.new('Svizzera', 'CH')
       self << AdminSubdivision.new('France', 'FR')
       self << AdminSubdivision.new('San Marino', 'SM')
-      self << AdminSubdivision.new('Città del Vaticano', 'CV')
+      self << AdminSubdivision.new('Città del Vaticano', 'VA')
     end
   end
 end
