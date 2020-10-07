@@ -97,7 +97,7 @@ else
   exit
 fi
 
-regions=("veneto" "friuli-venezia giulia" "emilia-romagna" "toscana")
+regions=("ven" "fvg" "emr" "tos")
 for r in "${regions[@]}"; do
   echo -e "Converting region ${CYAN}${r}${NORM}..."
   mapshaper -i "regions/${r}.geojson" -target type=polygon -filter admin_level==4 -erase water/lagoon.geojson -o "tmp/${r}_cut_4.geojson"
