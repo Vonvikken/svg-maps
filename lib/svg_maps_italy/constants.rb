@@ -1,4 +1,4 @@
-# Class:     /home/vonvikken/svg-maps/lib/css_constants.rb
+# Class:     /home/vonvikken/svg-maps/lib/constants.rb
 # Author:    Vincenzo Stornanti <von.vikken@gmail.com>
 #
 # Copyright 2020 Vincenzo Stornanti
@@ -37,5 +37,16 @@ module SVGMapsItaly
 
     # Lakes
     CLASS_LAKE = 'lake'
+  end
+
+  # File and directory paths
+  module PathConstants
+    DEFAULT_DATA_DIR = 'data'
+    OUT_DIR = 'out'
+    TMP_DIR = 'tmp'
+    REGIONS_DIR = 'regions'
+    STATES_DIR = 'states'
+    LAKES_PATH = 'water/lakes.geojson'
+    DEFAULT_CSS_PATH = '../style/style.css'
   end
 end
