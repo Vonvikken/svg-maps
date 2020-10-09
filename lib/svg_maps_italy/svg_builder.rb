@@ -91,21 +91,25 @@ module SVGMapsItaly
         path.add_child "<title>#{md['name']}</title>"
         path.add_child "<metadata>#{doc.create_cdata metadata}</metadata>" if @options[:add_metadata]
 
-        path['class'] = case md['admin_level'].to_i
-                        when 2..3
-                          CSSConstants::CLASS_FOREIGN
-                        when 4
-                          CSSConstants::CLASS_REGION
-                        when 6
-                          CSSConstants::CLASS_PROVINCE
-                        when 8
-                          if @options[:comune] == comune_name(md)
-                            "#{CSSConstants::CLASS_COMUNE} #{CSSConstants::CLASS_INTEREST}"
-                          else
-                            CSSConstants::CLASS_COMUNE
-                          end
+        path['class'] = if md['natural'] == 'water'
+                          CSSConstants::CLASS_LAKE
                         else
-                          ''
+                          case md['admin_level'].to_i
+                          when 2..3
+                            CSSConstants::CLASS_FOREIGN
+                          when 4
+                            CSSConstants::CLASS_REGION
+                          when 6
+                            CSSConstants::CLASS_PROVINCE
+                          when 8
+                            if @options[:comune] == comune_name(md)
+                              "#{CSSConstants::CLASS_COMUNE} #{CSSConstants::CLASS_INTEREST}"
+                            else
+                              CSSConstants::CLASS_COMUNE
+                            end
+                          else
+                            ''
+                          end
                         end
       end
     end
