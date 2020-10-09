@@ -53,6 +53,7 @@ module SVGMapsItaly
 
       @data_dir = data_dir
       @tmp_dir = tmp_dir
+      @lakes_full_path = ''
       @no_clean = options[:no_clean]
     end
 
@@ -90,6 +91,13 @@ module SVGMapsItaly
       @states.map { |s| state_file_path s }.each do |f|
         abort "File #{f} does not exits!" unless File.exist? f
       end
+
+      LOGGER.debug 'Checking if lakes dataset is present...'
+      lp = "#{@data_dir}/#{LAKES_PATH}"
+      return unless File.exist? lp
+
+      @lakes_full_path = lp
+      LOGGER.info 'Found lakes dataset, they will be added to your map if present.'
     end
 
     def initial_datasets
@@ -180,7 +188,7 @@ module SVGMapsItaly
       states_list = @states.map { |s| state_file_path s }.map { |n| "'#{n}'" }.join ' '
       bbox_bounds = "#{bb_info[:nw_lon]},#{bb_info[:nw_lat]},#{bb_info[:se_lon]},#{bb_info[:se_lat]}"
       no_prov = @province.level6 ? prov_no_dataset_file_path : ''
-      cmd = "mapshaper -i #{com_dataset_file_path} #{no_prov} #{regions_list} #{states_list} #{lakes_file} "\
+      cmd = "mapshaper -i #{com_dataset_file_path} #{no_prov} #{regions_list} #{states_list} #{@lakes_full_path} "\
             "combine-files -merge-layers force -clip bbox=#{bbox_bounds} -o #{combined_file_path}"
       `#{cmd}`
     end
@@ -214,11 +222,6 @@ module SVGMapsItaly
     # File path of the given state
     def state_file_path(state)
       "#{@data_dir}/#{STATES_DIR}/#{state.filename}.geojson"
-    end
-
-    # File path of the lakes dataset
-    def lakes_file
-      "#{@data_dir}/#{LAKES_PATH}"
     end
 
     # File path of the intermediate dataset with the boundaries of the given region
