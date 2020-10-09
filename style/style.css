@@ -26,6 +26,13 @@
     z-index: -6;
 }
 
+.lake {
+    stroke: #82AEE3;
+    stroke-width: 1px;
+    fill: #82AEE3;
+    fill-opacity: 90%;
+}
+
 svg {
     background-color: #9EC7F3;
     stroke: none;
@@ -34,4 +41,8 @@ svg {
 path:hover {
     stroke-width: 3px;
     filter: brightness(95%);
+}
+
+.lake:hover {
+    stroke-width: 2px;
 }
