@@ -34,5 +34,8 @@ module SVGMapsItaly
 
     # Highlighted comune
     CLASS_INTEREST = 'interest'
+
+    # Lakes
+    CLASS_LAKE = 'lake'
   end
 end

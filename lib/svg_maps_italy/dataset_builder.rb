@@ -31,6 +31,7 @@ module SVGMapsItaly
 
     REGIONS_DIR = 'regions'
     STATES_DIR = 'states'
+    LAKES_PATH = 'water/lakes.geojson'
 
     def initialize(options, data_dir, tmp_dir)
       @province = Province.instance.find(options[:province])
@@ -179,7 +180,7 @@ module SVGMapsItaly
       states_list = @states.map { |s| state_file_path s }.map { |n| "'#{n}'" }.join ' '
       bbox_bounds = "#{bb_info[:nw_lon]},#{bb_info[:nw_lat]},#{bb_info[:se_lon]},#{bb_info[:se_lat]}"
       no_prov = @province.level6 ? prov_no_dataset_file_path : ''
-      cmd = "mapshaper -i #{com_dataset_file_path} #{no_prov} #{regions_list} #{states_list} "\
+      cmd = "mapshaper -i #{com_dataset_file_path} #{no_prov} #{regions_list} #{states_list} #{lakes_file} "\
             "combine-files -merge-layers force -clip bbox=#{bbox_bounds} -o #{combined_file_path}"
       `#{cmd}`
     end
@@ -213,6 +214,11 @@ module SVGMapsItaly
     # File path of the given state
     def state_file_path(state)
       "#{@data_dir}/#{STATES_DIR}/#{state.filename}.geojson"
+    end
+
+    # File path of the lakes dataset
+    def lakes_file
+      "#{@data_dir}/#{LAKES_PATH}"
     end
 
     # File path of the intermediate dataset with the boundaries of the given region
