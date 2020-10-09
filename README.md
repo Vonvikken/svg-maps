@@ -6,10 +6,10 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Vonvikken/svg-maps)
 ![GitHub](https://img.shields.io/github/license/Vonvikken/svg-maps)
 
-Ruby gem used to create SVG maps of Italian _comuni_ and provinces from OSM data.
+Ruby gem used to create SVG maps of Italian _comuni_ (i.e. municipalities) and provinces from OSM data.
 
 ## Description
-I made this script to create SVG maps of Italian administrative subdivisions (namely regions, provinces and _comuni_),
+I made this script to create SVG maps of Italian administrative subdivisions, namely regions, provinces and _comuni_ (singular: _comune_),
 intending to publish them on Wikipedia, like I did
 [several years ago](https://commons.wikimedia.org/wiki/File:Map_of_comune_of_Rimini_(province_of_Rimini,_region_Emilia-Romagna,_Italy).svg).
 
@@ -31,8 +31,7 @@ _Note_: if you don't see the tooltips and the highlighted boundaries, try to rig
 image_.
 
 ## Prerequisites
-This script uses [Mapshaper](https://github.com/mbloch/mapshaper) to perform all the magics on the map data. If it isn't installed
-nothing will work. And, of course, you need Ruby too! I used version 2.7, but it should work at least with 2.3.
+This script uses [Mapshaper](https://github.com/mbloch/mapshaper) and [osmtogeojson](https://github.com/tyrasd/osmtogeojson) to perform all the magics on the map data. If they are not installed nothing will work. And, of course, you need Ruby too! I used version 2.7, but it should work at least with 2.3.
 
 Before the first use you need to download the source datasets. Please follow the instructions in the corresponding
 [wiki page](https://github.com/Vonvikken/svg-maps/wiki/Source-datasets).
