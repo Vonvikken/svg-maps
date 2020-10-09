@@ -30,6 +30,8 @@ independent nation of San Marino is colored in gray.
 _Note_: if you don't see the tooltips and the highlighted boundaries, try to right click on the image and select _Show
 image_.
 
+You can perform some further visual improvements on the generated maps. See the related [wiki page](https://github.com/Vonvikken/svg-maps/wiki/Visual-enhancements) for details.
+
 ## Prerequisites
 This script uses [Mapshaper](https://github.com/mbloch/mapshaper) and [osmtogeojson](https://github.com/tyrasd/osmtogeojson) to perform all the magics on the map data. If they are not installed nothing will work. And, of course, you need Ruby too! I used version 2.7, but it should work at least with 2.3.
 
