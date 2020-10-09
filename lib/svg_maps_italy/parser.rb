@@ -21,13 +21,14 @@ require 'optparse'
 require_relative 'province'
 require_relative 'region'
 require_relative 'state'
+require_relative 'constants'
 
 module SVGMapsItaly
   # Command-line argument parser
   class Parser
+    include PathConstants
     attr_reader :options
 
-    DEF_DATA_DIR = 'data'
     DEF_SIMPLIFY = 1.0
     DEF_PADDING = 0.05
     DEF_SVG_WIDTH = 1600
@@ -36,7 +37,7 @@ module SVGMapsItaly
 
     def initialize
       @options = {
-        data_dir: DEF_DATA_DIR,
+        data_dir: PathConstants::DEFAULT_DATA_DIR,
         extract_comuni: false,
         simplify: DEF_SIMPLIFY,
         n_padding: DEF_PADDING,
@@ -55,7 +56,8 @@ module SVGMapsItaly
         opts.separator ''
         opts.separator 'Options:'
 
-        opts.on('-d', '--data-dir DATA_DIR', %(Path of the data directory (default: "#{DEF_DATA_DIR}"))) do |data_dir|
+        opts.on('-d', '--data-dir DATA_DIR', 'Path of the data directory (default: '\
+                "\"#{PathConstants::DEFAULT_DATA_DIR}\")") do |data_dir|
           @options[:data_dir] = data_dir
         end
 

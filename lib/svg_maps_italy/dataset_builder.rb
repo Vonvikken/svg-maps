@@ -23,15 +23,13 @@ require_relative 'logger_utility'
 require_relative 'province'
 require_relative 'region'
 require_relative 'state'
+require_relative 'constants'
 
 module SVGMapsItaly
   # Class used for building the intermediate datasets of the maps
   class DatasetBuilder
     include LoggerUtility
-
-    REGIONS_DIR = 'regions'
-    STATES_DIR = 'states'
-    LAKES_PATH = 'water/lakes.geojson'
+    include PathConstants
 
     def initialize(options, data_dir, tmp_dir)
       @province = Province.instance.find(options[:province])
@@ -93,7 +91,7 @@ module SVGMapsItaly
       end
 
       LOGGER.debug 'Checking if lakes dataset is present...'
-      lp = "#{@data_dir}/#{LAKES_PATH}"
+      lp = "#{@data_dir}/#{PathConstants::LAKES_PATH}"
       return unless File.exist? lp
 
       @lakes_full_path = lp
@@ -211,17 +209,17 @@ module SVGMapsItaly
 
     # File path of the region the selected province belongs to
     def own_reg_file_path
-      "#{@data_dir}/#{REGIONS_DIR}/#{@province.reg.filename}.geojson"
+      "#{@data_dir}/#{PathConstants::REGIONS_DIR}/#{@province.reg.filename}.geojson"
     end
 
     # File path of the given region
     def reg_file_path(region)
-      "#{@data_dir}/#{REGIONS_DIR}/#{region.filename}.geojson"
+      "#{@data_dir}/#{PathConstants::REGIONS_DIR}/#{region.filename}.geojson"
     end
 
     # File path of the given state
     def state_file_path(state)
-      "#{@data_dir}/#{STATES_DIR}/#{state.filename}.geojson"
+      "#{@data_dir}/#{PathConstants::STATES_DIR}/#{state.filename}.geojson"
     end
 
     # File path of the intermediate dataset with the boundaries of the given region

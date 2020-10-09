@@ -20,11 +20,12 @@
 require 'nokogiri'
 require_relative 'logger_utility'
 require_relative 'metadata_reader'
-require_relative 'css_constants'
+require_relative 'constants'
 
 module SVGMapsItaly
   # Class used to generate an SVG map from a GeoJSON dataset
   class SVGBuilder
+    include PathConstants
     include CSSConstants
     include LoggerUtility
 
