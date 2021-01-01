@@ -32,11 +32,8 @@ Gem::Specification.new do |spec|
   spec.license       = 'Apache-2.0'
 
   spec.summary       = 'Ruby scripts used to create SVG maps of Italian comuni and provinces from OSM data.'
-  # spec.description   = 'Write a longer description or delete this line.'
   spec.homepage      = 'https://github.com/Vonvikken/svg-maps'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
-
-  # spec.metadata['allowed_push_host'] = "Set to 'http://mygemserver.com'"
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/Vonvikken/svg-maps'
