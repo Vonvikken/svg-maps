@@ -22,5 +22,5 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in svg_maps_italy.gemspec
 gemspec
 
-gem 'nokogiri', '~> 1.11.0.rc4'
+gem 'nokogiri', '~> 1.16.3'
 gem 'rake', '~> 12.0'

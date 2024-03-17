@@ -12,10 +12,10 @@ options = parser.options
 data_dir = File.expand_path options[:data_dir]
 
 out_dir = "#{data_dir}/#{SVGMapsItaly::PathConstants::OUT_DIR}"
-Dir.mkdir out_dir unless File.exist? out_dir
+FileUtils.mkdir_p out_dir unless File.exist? out_dir
 
 tmp_dir = "#{data_dir}/#{SVGMapsItaly::PathConstants::TMP_DIR}"
-Dir.mkdir tmp_dir unless File.exist? tmp_dir
+FileUtils.mkdir_p tmp_dir unless File.exist? tmp_dir
 
 css_path = if options[:css_path]
              File.expand_path(options[:css_path])
