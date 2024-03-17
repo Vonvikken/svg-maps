@@ -43,7 +43,7 @@ cd ../data/states || exit
 for c in "${countries[@]}"; do
   filename="${c}.geojson"
   echo -e "Processing ${CYAN}${filename}${NORM}..."
-  mapshaper -i "${filename}" -each 'admin_level=admin_level.toString();id=id.toString()' -o force "${filename}"
+  mapshaper -i "${filename}" -each 'admin_level=admin_level.toString();id=osm_id.toString()' -o force "${filename}"
   # shellcheck disable=SC2181
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}Done!${NORM}"
